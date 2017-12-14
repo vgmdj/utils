@@ -10,17 +10,17 @@ import (
 	"strings"
 )
 
-func Get(encode bool, baseURL string, respInfo interface{}, query map[string]string) (err error) {
+func Get(encode bool, baseURL string, respInfo interface{}, query Query) (err error) {
 	var (
 		url  string
 		resp *http.Response
 		temp []byte
 	)
 
-	if len(query) == 0 {
+	if len(query.QMap) == 0 {
 		url = baseURL
 	} else {
-		url = jointURL(encode, baseURL, query)
+		url = JointURL(encode, baseURL, query)
 	}
 
 	if resp, err = http.Get(url); err != nil {
@@ -43,12 +43,19 @@ func Get(encode bool, baseURL string, respInfo interface{}, query map[string]str
 	return
 }
 
-func jointURL(encode bool, basePath string, query map[string]string) string {
+func JointURL(encode bool, basePath string, query Query) string {
 	queryInfo := "?"
 
-	for k, v := range query {
-		queryInfo += fmt.Sprintf("%s=%s", k, v)
-		queryInfo += "&"
+	if query.IsOrdered && len(query.QKeys) != 0 {
+		for _, v := range query.QKeys {
+			queryInfo += fmt.Sprintf("%s=%s", v, query.QMap[v])
+			queryInfo += "&"
+		}
+	} else {
+		for k, v := range query.QMap {
+			queryInfo += fmt.Sprintf("%s=%s", k, v)
+			queryInfo += "&"
+		}
 	}
 
 	queryInfo = strings.TrimRight(queryInfo, "&")

@@ -9,7 +9,6 @@ import (
 	"net/http"
 )
 
-//PostJSON json post send and recv
 func PostJSON(url string, body interface{}, respInfo interface{}) (err error) {
 	var (
 		client  http.Client
@@ -50,7 +49,6 @@ func PostJSON(url string, body interface{}, respInfo interface{}) (err error) {
 	return
 }
 
-//PostXML xml post send and recv
 func PostXML(url string, body interface{}, respInfo interface{}) (err error) {
 	var (
 		client  http.Client
