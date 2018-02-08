@@ -3,9 +3,7 @@ package navigation
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"util/dispatch"
-	"util/navigation/area"
 )
 
 const (
@@ -42,7 +40,7 @@ const (
 	txDistanceURL  = "http://apis.map.qq.com/ws/distance/v1/"
 	txDirectionURL = "http://apis.map.qq.com/ws/direction/v1/driving/"
 
-	radius  = 30000
+	radius  = 50000
 	keyword = "加油站"
 	key     = "MJPBZ-GTLKO-26SW6-STDXP-IQH4H-UVBDB"
 	filter  = "category=加油站,中石化"
@@ -69,9 +67,10 @@ type (
 		//Tel      string   `json:"tel"`
 		//Category string   `json:"category"`
 		//Type     int      `json:"type"`
-		Location location `json:"location"`
-		Distance float64  `json:"_distance"`
-		AdInfo   adInfo   `json:"ad_info"`
+		Location    location `json:"location"`
+		PreDistance float64  `json:"_distance"`
+		Distance    string   `json:"distance"`
+		AdInfo      adInfo   `json:"ad_info"`
 	}
 
 	location struct {
@@ -80,8 +79,8 @@ type (
 	}
 
 	adInfo struct {
-		AdCode   int    `json:"adcode"`
-		Province string `json:"province"`
+		AdCode int `json:"adcode"`
+		//Province string `json:"province"`
 	}
 
 	txGeocoderResp struct {
@@ -133,9 +132,12 @@ func TxSearch(lat float64, lng float64, pageIndex string, pageSize string) (sear
 	}
 
 	for k, v := range searchInfo.Data {
-		adcode := v.AdInfo.AdCode / 10000
-		adcode = adcode * 10000
-		searchInfo.Data[k].AdInfo.Province = area.GetAreaNameByCode(strconv.Itoa(adcode))
+		//adcode := v.AdInfo.AdCode / 10000
+		//adcode = adcode * 10000
+		//searchInfo.Data[k].AdInfo.Province = area.GetAreaNameByCode(strconv.Itoa(adcode))
+
+		searchInfo.Data[k].Distance = Distance(v.PreDistance)
+
 	}
 
 	return
