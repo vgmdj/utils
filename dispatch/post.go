@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func PostJSON(url string, body interface{}, respInfo interface{}) (err error) {
+func PostJSON(url string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	var (
 		client  http.Client
 		request *http.Request
@@ -28,7 +28,13 @@ func PostJSON(url string, body interface{}, respInfo interface{}) (err error) {
 		return
 	}
 
-	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	if headers == nil {
+		request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	} else {
+		for k, v := range headers {
+			request.Header.Set(k, v)
+		}
+	}
 
 	if resp, err = client.Do(request); err != nil {
 		log.Println("发送请求错误")
