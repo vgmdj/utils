@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-
-
-
-
 //将给定的str，从offset位开始，一直替换limit位的repStr
 func HideString(str string, offset int, limit int, repStr string) (result string, err error) {
 	var (

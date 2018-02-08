@@ -1,4 +1,4 @@
-package characters
+package chars
 
 import (
 	"regexp"

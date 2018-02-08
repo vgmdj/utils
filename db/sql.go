@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"util/characters"
+	"github.com/vgmdj/utils/chars"
 )
 
 const (
@@ -39,5 +39,5 @@ func attach(sql string, query interface{}, data interface{}, op string, relation
 func checkOp(op string) bool {
 	ops := []string{EQ, LT, LE, NE, GT, GE}
 
-	return characters.IsStringContain(op, ops)
+	return chars.IsStringContain(op, ops)
 }
