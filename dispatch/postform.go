@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func PostFrom(postUrl string, respInfo interface{}, formValues map[string]string, headers map[string]string) (err error) {
+func PostForm(postUrl string, respInfo interface{}, formValues map[string]string, headers map[string]string) (err error) {
 	var (
 		client  http.Client
 		request *http.Request

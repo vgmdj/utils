@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	Baseurl    = "http://apis.eolinker.com/common/oil/getOilPriceToday?"
+	Baseurl    = "http://apis.eolinker.com/common/oil/getOilPriceToday"
 	ProductKey = ""
 )
 
@@ -36,7 +36,7 @@ func GetPriceToday(prov ...string) (*ResOilPrice, error) {
 	res := new(ResOilPrice)
 	values := make(map[string]string)
 	values["productKey"] = ProductKey
-	err := dispatch.PostFrom(Baseurl, res, values, nil)
+	err := dispatch.PostForm(Baseurl, res, values, nil)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
