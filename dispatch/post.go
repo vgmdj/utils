@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
+//PostJSON http method post, content type application/json
 func PostJSON(url string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	var (
 		client  http.Client
@@ -42,19 +44,12 @@ func PostJSON(url string, body interface{}, respInfo interface{}, headers map[st
 	}
 	defer resp.Body.Close()
 
-	if temp, err = ioutil.ReadAll(resp.Body); err != nil {
-		log.Println("resp body read err ")
-		return
-	}
+	contentType := resp.Header.Get("Content-Type")
 
-	if err = json.Unmarshal(temp, respInfo); err != nil {
-		log.Println("resp status code ", resp.StatusCode)
-		return
-	}
-
-	return
+	return respParser(resp.Body, contentType, respInfo)
 }
 
+//PostXML http method post , content type application/xml
 func PostXML(url string, body interface{}, respInfo interface{}) (err error) {
 	var (
 		client  http.Client
@@ -82,15 +77,45 @@ func PostXML(url string, body interface{}, respInfo interface{}) (err error) {
 	}
 	defer resp.Body.Close()
 
-	if temp, err = ioutil.ReadAll(resp.Body); err != nil {
-		log.Println("resp body read err ")
+	contentType := resp.Header.Get("Content-Type")
+
+	return respParser(resp.Body, contentType, respInfo)
+}
+
+//PostForm http method post , content type x-www-form-urlencoded
+func PostForm(postUrl string, respInfo interface{}, formValues map[string]string, headers map[string]string) (err error) {
+	var (
+		client  http.Client
+		request *http.Request
+		resp    *http.Response
+	)
+
+	values := make(url.Values)
+	for k, v := range formValues {
+		values[k] = []string{v}
+	}
+
+	if request, err = http.NewRequest("POST",
+		postUrl, strings.NewReader(values.Encode())); err != nil {
+		log.Println("url ", postUrl)
 		return
 	}
 
-	if err = xml.Unmarshal(temp, respInfo); err != nil {
-		log.Println("resp status code ", resp.StatusCode)
-		return
+	if headers == nil {
+		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	} else {
+		for k, v := range headers {
+			request.Header.Set(k, v)
+		}
 	}
 
-	return
+	if resp, err = client.Do(request); err != nil {
+		log.Println("发送请求错误")
+		return
+	}
+	defer resp.Body.Close()
+
+	contentType := resp.Header.Get("Content-Type")
+
+	return respParser(resp.Body, contentType, respInfo)
 }

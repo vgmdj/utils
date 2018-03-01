@@ -3,7 +3,7 @@ package navigation
 import (
 	"fmt"
 	"log"
-	"util/dispatch"
+	"github.com/vgmdj/utils/dispatch"
 )
 
 const (
@@ -42,13 +42,14 @@ const (
 
 	radius  = 50000
 	keyword = "加油站"
-	key     = "MJPBZ-GTLKO-26SW6-STDXP-IQH4H-UVBDB"
 	filter  = "category=加油站,中石化"
 	//pageSize = "10"
 )
 
 var (
-	ErrMsg map[int]string
+	key = "MJPBZ-GTLKO-26SW6-STDXP-IQH4H-UVBDB"
+
+	ErrMsg = make(map[int]string)
 )
 
 type (
@@ -61,16 +62,16 @@ type (
 	}
 
 	poi struct {
-		ID      string `json:"id"`
-		Title   string `json:"title"`
-		Address string `json:"address"`
-		//Tel      string   `json:"tel"`
-		//Category string   `json:"category"`
-		//Type     int      `json:"type"`
+		ID          string   `json:"id"`
+		Title       string   `json:"title"`
+		Address     string   `json:"address"`
 		Location    location `json:"location"`
 		PreDistance float64  `json:"_distance"`
 		Distance    string   `json:"distance"`
 		AdInfo      adInfo   `json:"ad_info"`
+		//Tel      string   `json:"tel"`
+		//Category string   `json:"category"`
+		//Type     int      `json:"type"`
 	}
 
 	location struct {
@@ -101,7 +102,6 @@ type (
 )
 
 func init() {
-	ErrMsg = make(map[int]string)
 	ErrMsg[invalidParameter] = "请求参数信息有误"
 	ErrMsg[invalidKey] = "Key格式错误"
 	ErrMsg[invalidReq] = "请求有护持信息请检查字符串"
@@ -109,22 +109,24 @@ func init() {
 
 }
 
+func InitTxMap(mapKey string) {
+	if mapKey != "" {
+		key = mapKey
+	}
+
+}
+
 //TxSearch POI搜索服务
 func TxSearch(lat float64, lng float64, pageIndex string, pageSize string) (searchInfo txSearchResp, err error) {
-	qmap := make(map[string]string)
-	qmap["boundary"] = fmt.Sprintf("nearby(%f,%f,%d)", lat, lng, radius)
-	qmap["keyword"] = keyword
-	qmap["key"] = key
-	qmap["filter"] = filter
-	qmap["orderby"] = "_distance"
-	qmap["output"] = "json"
-	qmap["page_size"] = pageSize
-	qmap["page_index"] = pageIndex
-
-	query := dispatch.Query{
-		QMap:      qmap,
-		IsOrdered: false,
-	}
+	query := make(map[string]string)
+	query["boundary"] = fmt.Sprintf("nearby(%f,%f,%d)", lat, lng, radius)
+	query["keyword"] = keyword
+	query["key"] = key
+	query["filter"] = filter
+	query["orderby"] = "_distance"
+	query["output"] = "json"
+	query["page_size"] = pageSize
+	query["page_index"] = pageIndex
 
 	if err = dispatch.Get(true, txSearchURL, &searchInfo, query); err != nil {
 		log.Println(txSearchURL, query)
@@ -149,12 +151,7 @@ func TxGeocoder(lat float64, lng float64) (geocoder txGeocoderResp, err error) {
 	query["key"] = key
 	query["output"] = "json"
 
-	disQuery := dispatch.Query{
-		QMap:      query,
-		IsOrdered: false,
-	}
-
-	if err = dispatch.Get(true, txGeocoderURL, &geocoder, disQuery); err != nil {
+	if err = dispatch.Get(true, txGeocoderURL, &geocoder, query); err != nil {
 		log.Println(txGeocoderURL, query)
 		return
 	}
