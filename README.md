@@ -9,7 +9,7 @@
 ## db
 对sql语句处理
 
-## dispatch
+## httplib
 http 请求与接收，支持json和xml类型返回
 
 ## encrypt

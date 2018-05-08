@@ -3,7 +3,7 @@ package navigation
 import (
 	"fmt"
 	"log"
-	"github.com/vgmdj/utils/dispatch"
+	"github.com/vgmdj/utils/httplib"
 )
 
 const (
@@ -128,7 +128,7 @@ func TxSearch(lat float64, lng float64, pageIndex string, pageSize string) (sear
 	query["page_size"] = pageSize
 	query["page_index"] = pageIndex
 
-	if err = dispatch.Get(true, txSearchURL, &searchInfo, query); err != nil {
+	if err = httplib.Get(true, txSearchURL, &searchInfo, query); err != nil {
 		log.Println(txSearchURL, query)
 		return
 	}
@@ -151,7 +151,7 @@ func TxGeocoder(lat float64, lng float64) (geocoder txGeocoderResp, err error) {
 	query["key"] = key
 	query["output"] = "json"
 
-	if err = dispatch.Get(true, txGeocoderURL, &geocoder, query); err != nil {
+	if err = httplib.Get(true, txGeocoderURL, &geocoder, query); err != nil {
 		log.Println(txGeocoderURL, query)
 		return
 	}

@@ -1,4 +1,4 @@
-package dispatch
+package httplib
 
 import (
 	"fmt"

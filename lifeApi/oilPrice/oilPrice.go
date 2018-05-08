@@ -1,7 +1,7 @@
 package oilPrice
 
 import (
-	"github.com/vgmdj/utils/dispatch"
+	"github.com/vgmdj/utils/httplib"
 	"log"
 )
 
@@ -36,7 +36,7 @@ func GetPriceToday(prov ...string) (*ResOilPrice, error) {
 	res := new(ResOilPrice)
 	values := make(map[string]string)
 	values["productKey"] = ProductKey
-	err := dispatch.PostForm(Baseurl, res, values, nil)
+	err := httplib.PostForm(Baseurl, res, values, nil)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
