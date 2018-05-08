@@ -1,4 +1,4 @@
-package oil
+package oilPrice
 
 import (
 	"github.com/vgmdj/utils/dispatch"
