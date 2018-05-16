@@ -29,6 +29,18 @@ func IsPwd(str ...string) bool {
 	return b
 }
 
+//数字+字母  不限制大小写 不限位数
+func IsIntegerOrAlphabet(str ...string) bool {
+	var b bool
+	for _, s := range str {
+		b, _ = regexp.MatchString("^[0-9a-zA-Z]+$", s)
+		if false == b {
+			return b
+		}
+	}
+	return b
+}
+
 /************************* 数字类型 ************************/
 //纯整数
 func IsInteger(str ...string) bool {
