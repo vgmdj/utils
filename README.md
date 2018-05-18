@@ -22,7 +22,7 @@ http 请求与接收，支持json和xml类型返回
 消息队列相关
 
 ## sms
-short message system，一些常用短信（消息）平台的发送短信调用接口
+short message system，一些常用消息（短信）平台的消息发送接口<br>
 支持平台
 - 容联云通讯（支持）
 - 阿里云（待开发）
