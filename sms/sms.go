@@ -8,15 +8,17 @@ type SMSClient interface {
 	SendSM(templateId string, to string, data ...string) error
 }
 
+type SelectSystem uint16
+
 const (
-	SMS_YUNTONGXUN = iota + 1
+	SMS_YUNTONGXUN SelectSystem = iota + 1
 	SMS_ALIYUN
 	SMS_TENCENTCLOUD
 	SMS_WECHAT
 )
 
 type SMSFactory struct {
-	SMS uint16
+	SMS SelectSystem
 }
 
 func (sf SMSFactory) NewSMSClient(params map[string]string) (SMSClient, error) {
