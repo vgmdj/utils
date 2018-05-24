@@ -2,8 +2,8 @@ package navigation
 
 import (
 	"fmt"
-	"log"
 	"github.com/vgmdj/utils/httplib"
+	"log"
 )
 
 const (

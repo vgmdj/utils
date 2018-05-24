@@ -7,11 +7,10 @@ import (
 
 //使用数据库存价格等数据的时候，存在小数情况，一般放大转为整数存储
 
-const(
+const (
 	//Enlarge 放大倍数
 	Enlarge = 100
 )
-
 
 //MoneyStrToEnlargeInt32  string转放大int32
 func MoneyStrToEnlargeInt32(strm string) int {
@@ -67,8 +66,6 @@ func MoneyEnlargeStrToStr(str32m string) string {
 
 }
 
-
-
 //MoneyStrToInt64 string转int64
 func MoneyStrToInt64(strm string) int64 {
 	f32m, err := strconv.ParseInt(strm, 10, 32)
@@ -86,4 +83,3 @@ func MoneyEnlargeInt64ToStr(i64m int64) string {
 	return strconv.FormatFloat(ff32m, 'f', 2, 32)
 
 }
-

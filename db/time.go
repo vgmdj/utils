@@ -13,8 +13,8 @@ func TimeIntPRC(t time.Time) string {
 }
 
 //TimeIntYMD 中国数字时间，只取年月日
-func TimeIntYMD(t time.Time) string{
-	china,_ := time.LoadLocation("PRC")
+func TimeIntYMD(t time.Time) string {
+	china, _ := time.LoadLocation("PRC")
 	cstTime := t.In(china).Format("20060102150405")
 
 	return cstTime[:8]

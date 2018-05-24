@@ -1,11 +1,11 @@
 package files
 
-import(
-	"os"
+import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 	"sync"
-	"encoding/json"
 )
 
 //CheckFileIsExist 判断文件是否存在，存在返回true，不存在返回false
