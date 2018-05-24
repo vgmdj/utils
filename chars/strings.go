@@ -3,7 +3,6 @@ package chars
 import (
 	"errors"
 	"log"
-	"math"
 )
 
 //HideString 将给定的str，从offset位开始，一直替换limit位的repStr
@@ -32,13 +31,4 @@ func HideString(str string, offset int, limit int, repStr string) (result string
 	result = string(temp)
 
 	return
-}
-
-func BytesToInt(b []byte) int {
-	bti := 0
-	for k, v := range b {
-		bti += (int(v) - 48) * int(math.Pow10(len(b)-k-1))
-	}
-
-	return bti
 }
