@@ -1,16 +1,12 @@
 package chars
 
 import (
-	"bytes"
-	"encoding/binary"
 	"errors"
 	"log"
-	"regexp"
-	"strconv"
-	"strings"
+	"math"
 )
 
-//将给定的str，从offset位开始，一直替换limit位的repStr
+//HideString 将给定的str，从offset位开始，一直替换limit位的repStr
 func HideString(str string, offset int, limit int, repStr string) (result string, err error) {
 	var (
 		temp     []byte
@@ -38,117 +34,11 @@ func HideString(str string, offset int, limit int, repStr string) (result string
 	return
 }
 
-func IsIntContain(char int, strArr []int) bool {
-	if len(strArr) == 0 {
-		return false
-	}
-
-	for _, v := range strArr {
-		if char == v {
-			return true
-		}
-	}
-
-	return false
-
-}
-
-func IsStringContain(char string, strArr []string) bool {
-	if len(strArr) == 0 {
-		return false
-	}
-
-	for _, v := range strArr {
-		if char == v {
-			return true
-		}
-	}
-
-	return false
-
-}
-
-func DBBytesToInt(b []byte) int {
-	temp, err := strconv.Atoi(string(b))
-	if err != nil {
-		log.Println(err.Error(), string(b))
-		return 0
-	}
-
-	return temp
-}
-
-func DBBytesToBool(b []byte) bool {
-	if string(b) == "1" {
-		return true
-	}
-
-	return false
-}
-
-func ConvertArrayMapBytesToString(dbMaps []map[string][]byte) (maps []map[string]string) {
-	maps = make([]map[string]string, 0)
-	for _, dbmap := range dbMaps {
-		strMap := make(map[string]string)
-		for k, v := range dbmap {
-			strMap[k] = string(v)
-		}
-		maps = append(maps, strMap)
-	}
-
-	return
-
-}
-
-func ConvertMapBytesToString(dbMaps map[string][]byte) (maps map[string]string) {
-	maps = make(map[string]string)
-
-	for k, v := range dbMaps {
-		maps[k] = string(v)
-	}
-
-	return
-
-}
-
 func BytesToInt(b []byte) int {
-	bytesBuffer := bytes.NewBuffer(b)
-	var tmp int32
-	binary.Read(bytesBuffer, binary.BigEndian, &tmp)
-	return int(tmp)
-}
-
-func PrepareData(strQuery string, strRep ...string) (data string) {
-	strRep = append(strRep, " ")
-
-	query := strings.Split(strQuery, "?")
-	lenQuery := len(query)
-	lenReq := len(strRep)
-	if lenQuery == 0 || lenReq == 0 {
-		return strQuery
+	bti := 0
+	for k, v := range b {
+		bti += (int(v) - 48) * int(math.Pow10(len(b)-k-1))
 	}
 
-	if lenQuery != lenReq {
-		log.Println("数量对应错误", lenQuery, lenReq)
-		return strQuery
-	}
-
-	for k, v := range query {
-		data += v
-		data += strRep[k]
-	}
-
-	return
-}
-
-func CheckInt(strs ...string) bool {
-	for _, v := range strs {
-		match, err := regexp.Match(`^[0-9]*$`, []byte(v))
-		if err != nil || !match {
-			log.Println(err, match, v)
-			return false
-		}
-	}
-
-	return true
+	return bti
 }

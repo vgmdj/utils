@@ -1,4 +1,4 @@
-package db
+package chars
 
 import "time"
 

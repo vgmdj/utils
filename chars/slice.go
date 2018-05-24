@@ -26,3 +26,17 @@ func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
 	}
 	return
 }
+
+func IsContain(array []interface{}, value interface{}) bool {
+	if len(array) == 0 {
+		return false
+	}
+
+	for _, v := range array {
+		if value == v {
+			return true
+		}
+	}
+
+	return false
+}
