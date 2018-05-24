@@ -34,6 +34,10 @@ func TestIdCodeHelper(t *testing.T) {
 	ast.Equal(idCode2.GetAge(), 28)
 	ast.Equal(idCode3.GetAge(), 1)
 
+	ast.Equal(idCode.GetSex(), Male)
+	ast.Equal(idCode.GetSex().String(), "male")
+	ast.Equal(idCode.GetSex().CNString(), "男")
+
 	ast.Equal(idCode.GetBirthday().Year(), 1990)
 	ast.Equal(idCode.GetBirthday().Month(), time.July)
 	ast.Equal(idCode.GetBirthday().Day(), 11)

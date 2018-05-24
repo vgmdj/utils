@@ -5,6 +5,29 @@ import (
 	"time"
 )
 
+type Sex int
+
+const (
+	Male   Sex = 1
+	Female Sex = 2
+)
+
+func (s Sex) String() string {
+	if s == Male {
+		return "male"
+	}
+
+	return "female"
+}
+
+func (s Sex) CNString() string {
+	if s == Male {
+		return "男"
+	}
+
+	return "女"
+}
+
 var IdCardAlpha = []int{7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0}
 var IdCardCheckSum = []byte{'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'}
 
@@ -40,6 +63,15 @@ func (i *IdCard) GetAge() int {
 	}
 
 	return age - 1
+}
+
+func (i *IdCard) GetSex() Sex {
+	sex := BytesToInt(i.idNum[16:17])
+	if sex%2 == 0 {
+		return Female
+	}
+
+	return Male
 }
 
 func (i *IdCard) GetBirthday() time.Time {
