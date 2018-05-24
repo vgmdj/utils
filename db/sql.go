@@ -5,29 +5,31 @@ import (
 	"github.com/vgmdj/utils/chars"
 )
 
+type OP string
+
 const (
-	EQ   = "="
-	LT   = "<"
-	LE   = "<="
-	NE   = "!="
-	GT   = ">"
-	GE   = ">="
-	LIKE = "like"
+	EQ   OP = "="
+	LT   OP = "<"
+	LE   OP = "<="
+	NE   OP = "!="
+	GT   OP = ">"
+	GE   OP = ">="
+	LIKE OP = "like"
 )
 
-func AttachOr(sql string, query interface{}, data interface{}, op string) string {
+func AttachOr(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, "or")
 }
 
-func AttachAnd(sql string, query interface{}, data interface{}, op string) string {
+func AttachAnd(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, "and")
 }
 
-func Attach(sql string, query interface{}, data interface{}, op string) string {
+func Attach(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, " ")
 }
 
-func attach(sql string, query interface{}, data interface{}, op string, relation string) string {
+func attach(sql string, query interface{}, data interface{}, op OP, relation string) string {
 	if data == "" || !checkOp(op) {
 		return sql
 	}
@@ -36,8 +38,8 @@ func attach(sql string, query interface{}, data interface{}, op string, relation
 	return sql
 }
 
-func checkOp(op string) bool {
-	ops := []string{EQ, LT, LE, NE, GT, GE}
+func checkOp(op OP) bool {
+	ops := []interface{}{EQ, LT, LE, NE, GT, GE}
 
-	return chars.IsStringContain(op, ops)
+	return chars.IsContain(ops, op)
 }
