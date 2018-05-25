@@ -1,8 +1,38 @@
 package area
 
+import (
+	"sort"
+	"sync"
+)
+
 const LatestRevision = "2018"
 
-var gb2260Selector map[string]map[string]string
+var (
+	gb2260Selector = make(map[string]map[string]string)
+	mutex          sync.RWMutex
+)
+
+type Selector struct{}
+
+func (s *Selector) Register(revision string, gb2260 map[string]string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	if _, ok := gb2260Selector[revision]; !ok {
+		gb2260Selector[revision] = gb2260
+	}
+}
+
+func (s *Selector) Revisions() (list []string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	for revision, _ := range gb2260Selector {
+		list = append(list, revision)
+	}
+	sort.Strings(list)
+	return
+}
 
 type gb2260 struct {
 	gb map[string]string
