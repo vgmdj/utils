@@ -23,6 +23,7 @@ func (s *Selector) Register(revision string, gb2260 map[string]string) {
 	}
 }
 
+//Revisions 列出所有支持的revisions，并按最近到远的时间排序
 func (s *Selector) Revisions() (list []string) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -30,7 +31,8 @@ func (s *Selector) Revisions() (list []string) {
 	for revision, _ := range gb2260Selector {
 		list = append(list, revision)
 	}
-	sort.Strings(list)
+	sort.Sort(sort.Reverse(sort.StringSlice(list)))
+
 	return
 }
 
@@ -65,4 +67,37 @@ func (gb *gb2260) Get(code string) *AreaInfo {
 		City:     gb.gb[code[:4]+"00"],
 		County:   gb.gb[code],
 	}
+}
+
+//Search
+func (gb *gb2260) Search(code string) *AreaInfo {
+	revisions := Selector{}.Revisions()
+
+	for _, revision := range revisions {
+		gb := newGB2260(revision)
+		area := gb.Get(code)
+		if area != nil {
+			return area
+		}
+	}
+
+	return nil
+}
+
+//TODO AllProvinces
+func (gb *gb2260) AllProvinces() []AreaInfo {
+
+	return nil
+}
+
+//TODO AllCities
+func (gb *gb2260) AllCities() []AreaInfo {
+
+	return nil
+}
+
+//TODO AllCounties
+func (gb *gb2260) AllCounties() []AreaInfo {
+
+	return nil
 }
