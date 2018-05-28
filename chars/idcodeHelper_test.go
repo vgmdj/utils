@@ -1,7 +1,8 @@
-package chars
+package chars_test
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/vgmdj/utils/chars"
 	"testing"
 	"time"
 )
@@ -9,19 +10,19 @@ import (
 func TestIdCodeHelper(t *testing.T) {
 	ast := assert.New(t)
 
-	idCode, err := ParseIdCard("320321199007111234")
+	idCode, err := chars.ParseIdCard("320321199007111234")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
 	}
 
-	idCode2, err := ParseIdCard("320321199005243903")
+	idCode2, err := chars.ParseIdCard("420621199005243903")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
 	}
 
-	idCode3, err := ParseIdCard("320321201705241239")
+	idCode3, err := chars.ParseIdCard("320321201705241239")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -34,7 +35,7 @@ func TestIdCodeHelper(t *testing.T) {
 	ast.Equal(idCode2.GetAge(), 28)
 	ast.Equal(idCode3.GetAge(), 1)
 
-	ast.Equal(idCode.GetSex(), Male)
+	ast.Equal(idCode.GetSex(), chars.Male)
 	ast.Equal(idCode.GetSex().String(), "male")
 	ast.Equal(idCode.GetSex().CNString(), "男")
 
@@ -42,5 +43,12 @@ func TestIdCodeHelper(t *testing.T) {
 	ast.Equal(idCode.GetBirthday().Month(), time.July)
 	ast.Equal(idCode.GetBirthday().Day(), 11)
 	ast.Equal(idCode.GetLastFour(), "1234")
+
+	ast.Equal(idCode.GetPlaceOfBirth().Province, "江苏省")
+	ast.Equal(idCode.GetPlaceOfBirth().City, "徐州市")
+	ast.Equal(idCode.GetPlaceOfBirth().County, "丰县")
+	ast.Equal(idCode.GetPlaceOfBirth().FullName(), "江苏省徐州市丰县")
+
+	ast.Equal(idCode2.GetPlaceOfBirth().FullName(), "湖北省襄樊市襄阳县")
 
 }

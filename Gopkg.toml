@@ -24,6 +24,7 @@
 #   go-tests = true
 #   unused-packages = true
 
+ignored = ["github.com/vgmdj/gb2260*"]
 
 [[constraint]]
   name = "github.com/Luxurioust/excelize"
