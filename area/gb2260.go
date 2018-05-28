@@ -40,7 +40,7 @@ type gb2260 struct {
 	gb map[string]string
 }
 
-func newGB2260(revision ...string) *gb2260 {
+func newGB2260(revision ...string) Area {
 	rev := LatestRevision
 	if len(revision) != 0 {
 		if _, ok := gb2260Selector[revision[0]]; !ok {
