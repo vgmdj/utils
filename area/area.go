@@ -36,7 +36,7 @@ type AreaInfo struct {
 }
 
 func (ai *AreaInfo) FullName() string {
-	return ai.Province
+	return fmt.Sprintf("%s%s%s", ai.Province, ai.City, ai.County)
 }
 
 func (ai *AreaInfo) GetGB2260() string {
