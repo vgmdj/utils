@@ -18,7 +18,7 @@ http 请求与接收，并根据返回Content-Type 将返回结果绑定到相�
 - text/xml
 - text/plain (返回字符串)
 
-## area [more](https://github.com/vgmdj/utils/tree/master/area)
+## [area](https://github.com/vgmdj/utils/tree/master/area)
 区域号码转地址
 - 行政区划号码,历年来GB2260号码转换
 - 邮编
