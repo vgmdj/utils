@@ -42,7 +42,7 @@ log输出相关
 
 ## db
 对sql语句处理
-s
+
 ## sms
 short message system，一些常用消息（短信）平台的消息推送接口<br>
 支持平台
