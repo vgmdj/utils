@@ -27,7 +27,7 @@ http 请求与接收，并根据返回Content-Type 将返回结果绑定到相�
 ## logger
 log输出相关
 
-## config
+## [config](https://github.com/vgmdj/utils/tree/master/config)
 配置文件读取与使用
 
 ## encrypt
