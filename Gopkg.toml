@@ -24,7 +24,8 @@
 #   go-tests = true
 #   unused-packages = true
 
-ignored = ["github.com/vgmdj/gb2260*"]
+
+ignored = ["github.com/vgmdj/gb2260/gbdata"]
 
 [[constraint]]
   name = "github.com/Luxurioust/excelize"
@@ -35,16 +36,24 @@ ignored = ["github.com/vgmdj/gb2260*"]
   name = "github.com/axgle/mahonia"
 
 [[constraint]]
-  name = "github.com/go-ini/ini"
-  version = "1.36.0"
+  branch = "master"
+  name = "github.com/belogik/goes"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/streadway/amqp"
+  name = "github.com/cloudflare/golz4"
+
+[[constraint]]
+  name = "github.com/go-ini/ini"
+  version = "1.37.0"
+
+[[constraint]]
+  name = "github.com/gogo/protobuf"
+  version = "1.0.0"
 
 [[constraint]]
   name = "github.com/stretchr/testify"
-  version = "1.2.1"
+  version = "1.2.2"
 
 [[constraint]]
   branch = "master"

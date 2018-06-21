@@ -5,13 +5,25 @@
   name = "github.com/Luxurioust/excelize"
   packages = ["."]
   revision = "eb62256d165607c6877ce88efbba10c119137b3d"
-  version = "1.3"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/axgle/mahonia"
   packages = ["."]
   revision = "3358181d7394e26beccfae0ffde05193ef3be33a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/belogik/goes"
+  packages = ["."]
+  revision = "e54d722c3aff588e4c737fe11c07359019240824"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/cloudflare/golz4"
+  packages = ["."]
+  revision = "ef862a3cdc58a6f1fee4e3af3d44fbe279194cde"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -22,8 +34,14 @@
 [[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
-  revision = "6529cf7c58879c08d927016dde4477f18a0634cb"
-  version = "v1.36.0"
+  revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
+  version = "v1.37.0"
+
+[[projects]]
+  name = "github.com/gogo/protobuf"
+  packages = ["proto"]
+  revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -34,8 +52,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [[projects]]
   branch = "master"
@@ -44,11 +62,11 @@
     "pbkdf2",
     "scrypt"
   ]
-  revision = "75e913eb8a8e3d31a97b216de09de106a7b07681"
+  revision = "7f39a6fea4fe9364fb61e1def6a268a51b4f3a06"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fc77945461b6fdf0b35c7fce57f4dcb1398d165cb1bb8fd067691a70870f8915"
+  inputs-digest = "7690aecda591f83ea83e89ce9356277f33156b56601754bde673be38eeb49e2a"
   solver-name = "gps-cdcl"
   solver-version = 1
