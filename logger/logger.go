@@ -26,6 +26,11 @@ func SetLevel(l int) {
 	logs.SetLevel(l)
 }
 
+// SetAsync sets the global log is async
+func SetAsync() {
+	logs.Async()
+}
+
 // SetLogFuncCall set the CallDepth, default is 3
 func SetLogFuncCall(b bool) {
 	logs.SetLogFuncCall(b)
