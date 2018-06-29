@@ -3,14 +3,16 @@ package chars
 import "sort"
 
 func IsDuplicates(a []string) bool {
-	sort.Strings(a)
+	counter := make(map[string]struct{})
 
-	a_len := len(a)
-	for i := 0; i < a_len; i++ {
-		if i > 0 && a[i-1] == a[i] {
+	for _, v := range a {
+		if _, ok := counter[v]; ok {
 			return true
+		} else {
+			counter[v] = struct{}{}
 		}
 	}
+
 	return false
 }
 
