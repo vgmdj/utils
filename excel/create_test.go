@@ -11,10 +11,10 @@ func TestCreateFile(t *testing.T) {
 
 	exl.TitleKey = []string{"a", "b", "c", "d"}
 	titles := make(map[string]string)
-	titles["a"] = "北京榕树科技有限公司报表"
-	titles["b"] = "B"
-	titles["c"] = "C"
-	titles["d"] = "D"
+	titles["a"] = "公司报表A"
+	titles["b"] = "公司报表B"
+	titles["c"] = "公司报表C"
+	titles["d"] = "公司报表D"
 	exl.TitleName = titles
 
 	content1 := make(map[string]string)
@@ -31,7 +31,8 @@ func TestCreateFile(t *testing.T) {
 	content2["d"] = "D2"
 	exl.Content = append(exl.Content, content2)
 
-	CreateFile(exl)
+	exl.CreateFile()
+
 }
 
 func TestColumnTitle(t *testing.T) {

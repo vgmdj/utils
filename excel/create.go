@@ -7,36 +7,28 @@ import (
 	"strconv"
 )
 
-type (
-	Excel struct {
-		FileName  string
-		TitleKey  []string
-		TitleName map[string]string
-		Content   []map[string]string
-	}
-)
-
 //CreateFile
-func CreateFile(excel Excel) {
-	if err := checkExcel(excel); err != nil {
+func (excel *Excel) CreateFile() (err error) {
+	if err = excel.checkExcel(); err != nil {
 		logger.Error(err)
 		return
 	}
 
 	xlsx := excelize.NewFile()
 	values := make(map[string]string)
-	setValues(excel, values)
-
+	excel.setValues(values)
 	setCellValue(xlsx, "sheet1", values)
 
-	err := xlsx.SaveAs(excel.FileName)
+	err = xlsx.SaveAs(excel.FileName)
 	if err != nil {
 		logger.Error(err)
 		return
 	}
+
+	return
 }
 
-func checkExcel(excel Excel) (err error) {
+func (excel *Excel) checkExcel() (err error) {
 	if excel.FileName == "" {
 		return fmt.Errorf("no file name")
 	}
@@ -54,15 +46,15 @@ func checkExcel(excel Excel) (err error) {
 	return
 }
 
+func (excel *Excel) setValues(values map[string]string) {
+	setTitle(excel.TitleKey, excel.TitleName, values)
+	setContent(excel.TitleKey, excel.Content, values)
+}
+
 func setCellValue(xlsx *excelize.File, sheet string, values map[string]string) {
 	for k, v := range values {
 		xlsx.SetCellValue(sheet, k, v)
 	}
-}
-
-func setValues(excel Excel, values map[string]string) {
-	setTitle(excel.TitleKey, excel.TitleName, values)
-	setContent(excel.TitleKey, excel.Content, values)
 }
 
 func setTitle(key []string, name map[string]string, values map[string]string) {
@@ -89,18 +81,9 @@ func setContent(key []string, values []map[string]string, cells map[string]strin
 
 func setLineValues(line int, values []string, cellValue map[string]string) {
 	for k, v := range values {
-		axis := columnTitle(k) + strconv.Itoa(line)
+		axis := columnTitle(k+1) + strconv.Itoa(line)
 		cellValue[axis] = v
 	}
 
 	return
-}
-
-func columnTitle(n int) string {
-	res := ""
-	for n > 0 {
-		res = string((n-1)%26+65) + res
-		n = (n - 1) / 26
-	}
-	return res
 }
