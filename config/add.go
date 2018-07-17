@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/go-ini/ini"
-	"log"
 	"reflect"
+
+	"github.com/go-ini/ini"
+	"github.com/vgmdj/utils/logger"
 )
 
 const (
@@ -39,7 +40,7 @@ func unmarshal(sec *ini.Section, rv reflect.Value) {
 		key := rType.Field(i).Tag.Get(tag)
 		secKey, err := sec.GetKey(key)
 		if err != nil {
-			log.Println(err.Error())
+			logger.Error(err.Error())
 		}
 
 		if rv.Field(i).CanSet() {

@@ -2,7 +2,7 @@ package httplib
 
 import (
 	"fmt"
-	"log"
+	"github.com/vgmdj/utils/logger"
 	"net/http"
 	"net/url"
 	"strings"
@@ -21,7 +21,7 @@ func Get(encode bool, baseURL string, respInfo interface{}, query ...map[string]
 	}
 
 	if resp, err = http.Get(reqURL); err != nil {
-		log.Println("发送请求错误")
+		logger.Error("发送请求错误")
 		return
 	}
 	defer resp.Body.Close()

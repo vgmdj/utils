@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/go-ini/ini"
+	"github.com/vgmdj/utils/logger"
 	"log"
 	"os"
 )
@@ -31,7 +32,7 @@ func (c *Conf) GetSection(sec string) *ini.Section {
 
 	section, err := c.Ctl.GetSection(sec)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 		return nil
 	}
 

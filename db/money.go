@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+	"github.com/vgmdj/utils/logger"
 	"strconv"
 )
 
@@ -16,7 +16,7 @@ const (
 func MoneyStrToEnlargeInt32(strm string) int {
 	f32m, err := strconv.ParseFloat(strm, 32)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 	}
 
 	int32m := f32m * Enlarge
@@ -28,7 +28,7 @@ func MoneyStrToEnlargeInt32(strm string) int {
 func MoneyStrToEnlargeInt64(strm string) int64 {
 	f32m, err := strconv.ParseFloat(strm, 32)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 	}
 
 	ff32m := f32m * Enlarge
@@ -40,7 +40,7 @@ func MoneyStrToEnlargeInt64(strm string) int64 {
 func MoneyStrToInt32(strm string) int {
 	temp, err := strconv.Atoi(strm)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 		return -1
 	}
 
@@ -70,7 +70,7 @@ func MoneyEnlargeStrToStr(str32m string) string {
 func MoneyStrToInt64(strm string) int64 {
 	f32m, err := strconv.ParseInt(strm, 10, 32)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 	}
 
 	return f32m

@@ -2,7 +2,8 @@ package chars
 
 import (
 	"errors"
-	"log"
+
+	"github.com/vgmdj/utils/logger"
 )
 
 //HideString 将给定的str，从offset位开始，一直替换limit位的repStr
@@ -16,7 +17,7 @@ func HideString(str string, offset int, limit int, repStr string) (result string
 
 	if strlen < 2 || strlen-1 < endPoint || len(repStr) != 1 {
 		err = errors.New("字符长度不合法或函数使用错误")
-		log.Println(str)
+		logger.Error(str)
 		return
 	}
 

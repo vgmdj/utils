@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"github.com/vgmdj/utils/logger"
 	"log"
 	"net/http"
 	"net/url"
@@ -20,13 +21,13 @@ func PostJSON(url string, body interface{}, respInfo interface{}, headers map[st
 	)
 
 	if temp, err = json.Marshal(body); err != nil {
-		log.Println("request: ", body)
+		logger.Error("request: ", body)
 		return
 	}
 
 	if request, err = http.NewRequest("POST",
 		url, bytes.NewReader(temp)); err != nil {
-		log.Println("url ", url)
+		logger.Error("url ", url)
 		return
 	}
 
@@ -39,7 +40,7 @@ func PostJSON(url string, body interface{}, respInfo interface{}, headers map[st
 	}
 
 	if resp, err = client.Do(request); err != nil {
-		log.Println("发送请求错误")
+		logger.Error("发送请求错误")
 		return
 	}
 	defer resp.Body.Close()
@@ -59,13 +60,13 @@ func PostXML(url string, body interface{}, respInfo interface{}) (err error) {
 	)
 
 	if temp, err = xml.Marshal(body); err != nil {
-		log.Println("request: ", body)
+		logger.Error("request: ", body)
 		return
 	}
 
 	if request, err = http.NewRequest("POST",
 		url, bytes.NewReader(temp)); err != nil {
-		log.Println("url ", url)
+		logger.Error("url ", url)
 		return
 	}
 

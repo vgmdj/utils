@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"github.com/vgmdj/utils/logger"
 	"io"
 	"io/ioutil"
-	"log"
 	"strings"
 )
 
@@ -60,7 +60,7 @@ func (dd DefaultDecoder) Unmarshal(body []byte, v interface{}) error {
 func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err error) {
 	var temp []byte
 	if temp, err = ioutil.ReadAll(body); err != nil {
-		log.Println("resp body read err ")
+		logger.Error("resp body read err ")
 		return
 	}
 
@@ -68,14 +68,14 @@ func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err 
 
 	decoder, ok := decoders[contentType]
 	if !ok {
-		log.Printf("unexpected content type %s\n", contentType)
-		log.Println("data : ", string(temp))
+		logger.Error("unexpected content type ", contentType)
+		logger.Error("data : ", string(temp))
 
 		return fmt.Errorf("Cannot decode request for %s data ", temp)
 	}
 
 	if err = decoder.Unmarshal(temp, respInfo); err != nil {
-		log.Println("err info ", string(temp))
+		logger.Error("err info ", string(temp))
 		return
 	}
 
