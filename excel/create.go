@@ -1,8 +1,9 @@
 package excel
 
 import (
+	"fmt"
 	"github.com/Luxurioust/excelize"
-	"log"
+	"github.com/vgmdj/utils/logger"
 	"strconv"
 )
 
@@ -15,13 +16,13 @@ type (
 	}
 )
 
-var (
-	alphabet = []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
-		"M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
-)
-
 //CreateFile
 func CreateFile(excel Excel) {
+	if err := checkExcel(excel); err != nil {
+		logger.Error(err)
+		return
+	}
+
 	xlsx := excelize.NewFile()
 	values := make(map[string]string)
 	setValues(excel, values)
@@ -30,27 +31,33 @@ func CreateFile(excel Excel) {
 
 	err := xlsx.SaveAs(excel.FileName)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
+		return
 	}
-
 }
 
-//CreateFile
-func CreateFileReader(excel Excel) *excelize.File {
-	xlsx := excelize.NewFile()
-	values := make(map[string]string)
-	setValues(excel, values)
+func checkExcel(excel Excel) (err error) {
+	if excel.FileName == "" {
+		return fmt.Errorf("no file name")
+	}
 
-	setCellValue(xlsx, "sheet1", values)
+	if len(excel.TitleKey) != len(excel.TitleName) {
+		return fmt.Errorf("can not match the title name ")
+	}
 
-	return xlsx
+	for _, v := range excel.TitleKey {
+		if _, ok := excel.TitleName[v]; !ok {
+			return fmt.Errorf("can not match the title name ")
+		}
+	}
+
+	return
 }
 
 func setCellValue(xlsx *excelize.File, sheet string, values map[string]string) {
 	for k, v := range values {
 		xlsx.SetCellValue(sheet, k, v)
 	}
-
 }
 
 func setValues(excel Excel, values map[string]string) {
@@ -82,9 +89,18 @@ func setContent(key []string, values []map[string]string, cells map[string]strin
 
 func setLineValues(line int, values []string, cellValue map[string]string) {
 	for k, v := range values {
-		axis := alphabet[k] + strconv.Itoa(line)
+		axis := columnTitle(k) + strconv.Itoa(line)
 		cellValue[axis] = v
 	}
 
 	return
+}
+
+func columnTitle(n int) string {
+	res := ""
+	for n > 0 {
+		res = string((n-1)%26+65) + res
+		n = (n - 1) / 26
+	}
+	return res
 }

@@ -1,6 +1,9 @@
 package excel
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestCreateFile(t *testing.T) {
 	exl := Excel{}
@@ -29,4 +32,16 @@ func TestCreateFile(t *testing.T) {
 	exl.Content = append(exl.Content, content2)
 
 	CreateFile(exl)
+}
+
+func TestColumnTitle(t *testing.T) {
+	ast := assert.New(t)
+
+	ast.Equal(columnTitle(1), "A")
+	ast.Equal(columnTitle(2), "B")
+	ast.Equal(columnTitle(3), "C")
+	ast.Equal(columnTitle(26), "Z")
+	ast.Equal(columnTitle(27), "AA")
+	ast.Equal(columnTitle(701), "ZY")
+
 }
