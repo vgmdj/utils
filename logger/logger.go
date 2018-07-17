@@ -21,6 +21,11 @@ const (
 // BeeLogger references the used application logger.
 var BeeLogger = logs.GetBeeLogger()
 
+// init set the default log config
+func init() {
+	logs.SetLogFuncCall(true)
+}
+
 // SetLevel sets the global log level used by the simple logger.
 func SetLevel(l int) {
 	logs.SetLevel(l)
