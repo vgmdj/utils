@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/vgmdj/utils/chars"
+	"strconv"
 )
 
 type OP string
@@ -27,6 +28,24 @@ func AttachAnd(sql string, query interface{}, data interface{}, op OP) string {
 
 func Attach(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, " ")
+}
+
+func Limit(sql string, l, o string) string {
+	var (
+		limit, _  = strconv.Atoi(l)
+		offset, _ = strconv.Atoi(o)
+	)
+
+	if limit == 0 {
+		return sql
+	}
+
+	if offset == 0 {
+		return fmt.Sprintf(" %s limit %d ", sql, limit)
+	}
+
+	return fmt.Sprintf(" %s limit %d, %d ", sql, offset, limit)
+
 }
 
 func attach(sql string, query interface{}, data interface{}, op OP, relation string) string {
