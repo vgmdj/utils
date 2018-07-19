@@ -16,7 +16,6 @@ func TestLogger(t *testing.T) {
 	SetLevel(LevelDebug)
 	SetLogFuncCall(true)
 
-
 	Info("this is info")
 	Debug("this is debug")
 	Error("this is error")
