@@ -20,6 +20,8 @@ func Get(encode bool, baseURL string, respInfo interface{}, query ...map[string]
 		reqURL = JointURL(encode, baseURL, query[0])
 	}
 
+	logger.Info(reqURL)
+
 	if resp, err = http.Get(reqURL); err != nil {
 		logger.Error("发送请求错误")
 		return

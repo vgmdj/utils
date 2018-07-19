@@ -5,113 +5,88 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"github.com/vgmdj/utils/logger"
-	"log"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 //PostJSON http method post, content type application/json
-func PostJSON(url string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
-	var (
-		client  http.Client
-		request *http.Request
-		resp    *http.Response
-		temp    []byte
-	)
+func PostJSON(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+	if len(headers) == 0 {
+		headers = make(map[string]string)
+	}
 
-	if temp, err = json.Marshal(body); err != nil {
+	if _, ok := headers["Content-Type"]; !ok {
+		headers["Content-Type"] = "application/json;charset=UTF-8"
+	}
+
+	var values []byte
+	if values, err = json.Marshal(body); err != nil {
 		logger.Error("request: ", body)
 		return
 	}
 
-	if request, err = http.NewRequest("POST",
-		url, bytes.NewReader(temp)); err != nil {
-		logger.Error("url ", url)
-		return
-	}
-
-	if headers == nil {
-		request.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	} else {
-		for k, v := range headers {
-			request.Header.Set(k, v)
-		}
-	}
-
-	if resp, err = client.Do(request); err != nil {
-		logger.Error("发送请求错误")
-		return
-	}
-	defer resp.Body.Close()
-
-	contentType := resp.Header.Get("Content-Type")
-
-	return respParser(resp.Body, contentType, respInfo)
+	return post(postUrl, values, respInfo, headers)
 }
 
 //PostXML http method post , content type application/xml
-func PostXML(url string, body interface{}, respInfo interface{}) (err error) {
-	var (
-		client  http.Client
-		request *http.Request
-		resp    *http.Response
-		temp    []byte
-	)
+func PostXML(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+	if len(headers) == 0 {
+		headers = make(map[string]string)
+	}
 
-	if temp, err = xml.Marshal(body); err != nil {
+	if _, ok := headers["Content-Type"]; !ok {
+		headers["Content-Type"] = "application/xml;charset=UTF-8"
+	}
+
+	var values []byte
+	if values, err = xml.Marshal(body); err != nil {
 		logger.Error("request: ", body)
 		return
 	}
 
-	if request, err = http.NewRequest("POST",
-		url, bytes.NewReader(temp)); err != nil {
-		logger.Error("url ", url)
-		return
-	}
-
-	request.Header.Set("Content-Type", "application/xml;charset=UTF-8")
-
-	if resp, err = client.Do(request); err != nil {
-		log.Println("发送请求错误")
-		return
-	}
-	defer resp.Body.Close()
-
-	contentType := resp.Header.Get("Content-Type")
-
-	return respParser(resp.Body, contentType, respInfo)
+	return post(postUrl, values, respInfo, headers)
 }
 
 //PostForm http method post , content type x-www-form-urlencoded
 func PostForm(postUrl string, respInfo interface{}, formValues map[string]string, headers map[string]string) (err error) {
-	var (
-		client  http.Client
-		request *http.Request
-		resp    *http.Response
-	)
+	if len(headers) == 0 {
+		headers = make(map[string]string)
+	}
+
+	if _, ok := headers["Content-Type"]; !ok {
+		headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
+	}
 
 	values := make(url.Values)
 	for k, v := range formValues {
 		values[k] = []string{v}
 	}
 
+	return post(postUrl, []byte(values.Encode()), respInfo, headers)
+}
+
+//post http post request
+func post(url string, body []byte, respInfo interface{}, headers map[string]string) (err error) {
+	var (
+		client  http.Client
+		request *http.Request
+		resp    *http.Response
+	)
+
+	logger.Info(url, string(body), headers)
+
 	if request, err = http.NewRequest("POST",
-		postUrl, strings.NewReader(values.Encode())); err != nil {
-		log.Println("url ", postUrl)
+		url, bytes.NewReader(body)); err != nil {
+		logger.Error("url ", url)
 		return
 	}
 
-	if headers == nil {
-		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	} else {
-		for k, v := range headers {
-			request.Header.Set(k, v)
-		}
+	for k, v := range headers {
+		request.Header.Set(k, v)
 	}
 
 	if resp, err = client.Do(request); err != nil {
-		log.Println("发送请求错误")
+		logger.Error("发送请求错误")
 		return
 	}
 	defer resp.Body.Close()
