@@ -68,7 +68,7 @@ func (i *idCard) GetAge() int {
 }
 
 func (i *idCard) GetSex() Sex {
-	sex := BytesToInt(i.idNum[16:17])
+	sex := ToInt(i.idNum[16:17])
 	if sex%2 == 0 {
 		return Female
 	}
@@ -77,9 +77,9 @@ func (i *idCard) GetSex() Sex {
 }
 
 func (i *idCard) GetBirthday() time.Time {
-	year := BytesToInt(i.idNum[6:10])
-	month := BytesToInt(i.idNum[10:12])
-	day := BytesToInt(i.idNum[12:14])
+	year := ToInt(i.idNum[6:10])
+	month := ToInt(i.idNum[10:12])
+	day := ToInt(i.idNum[12:14])
 
 	china, _ := time.LoadLocation("PRC")
 	bri := time.Date(year, time.Month(month), day, 0, 0, 0, 0, china)

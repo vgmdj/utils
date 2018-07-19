@@ -3,8 +3,6 @@ package db
 import (
 	"fmt"
 	"github.com/vgmdj/utils/chars"
-	"github.com/vgmdj/utils/logger"
-	"strconv"
 	"strings"
 )
 
@@ -33,27 +31,14 @@ func Attach(sql string, query interface{}, data interface{}, op OP) string {
 }
 
 func Limit(sql string, pageCount, pageIndex interface{}) string {
-	var count, index int
-
-	switch pageCount.(type) {
-	default:
-		logger.Error("invalid type ")
-		return sql
-	case string:
-		count, _ = strconv.Atoi(pageCount.(string))
-	}
-
-	switch pageIndex.(type) {
-	default:
-		logger.Error("invalid type ")
-		return sql
-	case string:
-		index, _ = strconv.Atoi(pageIndex.(string))
-	}
+	var (
+		count = chars.ToInt(pageCount)
+		index = chars.ToInt(pageIndex)
+	)
 
 	limit, offset := LimitQuery(count, index)
 
-	return fmt.Sprintf(" %s limit %d, %d ", sql, limit, offset)
+	return fmt.Sprintf(" %s limit %d, %d ", sql, offset, limit)
 
 }
 
@@ -87,7 +72,7 @@ func attach(sql string, query interface{}, data interface{}, op OP, relation str
 		return sql
 	}
 
-	sql = fmt.Sprintf(" %s where %s %v %v '%v' ", sql, relation, query, op, data)
+	sql = fmt.Sprintf(" %s where %v %v '%v' ", sql, query, op, data)
 	return sql
 }
 

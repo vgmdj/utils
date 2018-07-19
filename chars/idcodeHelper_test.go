@@ -31,7 +31,7 @@ func TestIdCodeHelper(t *testing.T) {
 	ast.Equal(idCode.CardNum, "320321199007111234")
 
 	//随时间变化
-	ast.Equal(idCode.GetAge(), 27)
+	ast.Equal(idCode.GetAge(), 28)
 	ast.Equal(idCode2.GetAge(), 28)
 	ast.Equal(idCode3.GetAge(), 1)
 
