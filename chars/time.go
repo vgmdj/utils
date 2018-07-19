@@ -1,6 +1,8 @@
 package chars
 
-import "time"
+import (
+	"time"
+)
 
 //数据库中时间一般以时间戳或无其他符号纯数字形式存在
 
@@ -32,4 +34,41 @@ func Time24Sub(t time.Time) time.Duration {
 //TimeID 以时间为基准的ID生成
 func TimeID() string {
 	return time.Now().Format("20060102") + RandomNumeric(8)
+}
+
+type restTime struct {
+	restTimeFrom  time.Duration
+	restTimeTo    time.Duration
+	crossMidNight bool
+}
+
+func RestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) *restTime {
+	rt := restTime{}
+	rt.SetRestTime(hFrom, mFrom, hTo, mTo, crossMidNight)
+	return &rt
+}
+
+func (rt *restTime) SetRestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) {
+	rt.restTimeFrom = time.Duration(hFrom)*time.Hour + time.Duration(mFrom)*time.Minute
+	rt.restTimeTo = time.Duration(hTo)*time.Hour + time.Duration(mTo)*time.Minute
+	rt.crossMidNight = crossMidNight
+}
+
+func (rt *restTime) IsRestTime(t time.Time) bool {
+	return !rt.IsWorkingTime(t)
+}
+
+func (rt *restTime) IsWorkingTime(t time.Time) bool {
+	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute
+
+	if !rt.crossMidNight && now >= rt.restTimeFrom && now <= rt.restTimeTo {
+		return false
+	}
+
+	if rt.crossMidNight && (now >= rt.restTimeFrom || now <= rt.restTimeTo) {
+		return false
+	}
+
+	return true
+
 }
