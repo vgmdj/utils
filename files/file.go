@@ -25,7 +25,7 @@ func NewFile(fileName string) *file {
 
 }
 
-//SetFileName
+//SetFileName local file name set
 func (lf *file) SetFileName(fileName string) {
 	lf.fileName = fileName
 }
