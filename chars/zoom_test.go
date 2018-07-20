@@ -8,16 +8,16 @@ import (
 func TestConversion(t *testing.T) {
 	ast := assert.New(t)
 
-	c1 := NewConversion("32", 10)
+	c1 := NewConversion(10, "32")
 	ast.Equal(c1.BaseValue(), float64(32))
 	ast.Equal(c1.ZoomOut().ToString(1), "320")
 	ast.Equal(c1.ZoomOut().ToInt(), 320)
 	ast.Equal(c1.ZoomIn().ToString(c1.multiples), "3.2")
 	ast.Equal(c1.ZoomIn().ToString(100), "3.20")
 	ast.Equal(c1.ZoomIn().ToInt(), 3)
-	ast.Equal(c1.ZoomIn().ToFloat64(), 3.2)
+	ast.Equal(c1.ZoomIn(320).ToFloat64(), 32.00)
 
-	c2 := NewConversion("32", 100)
+	c2 := NewConversion(100, "32")
 	ast.Equal(c2.BaseValue(), float64(32))
 	ast.Equal(c2.ZoomOut().ToString(1), "3200")
 	ast.Equal(c2.ZoomOut().ToInt(), 3200)

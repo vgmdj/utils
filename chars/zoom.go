@@ -11,15 +11,18 @@ type conversion struct {
 	multiples int
 }
 
-func NewConversion(base interface{}, mutiples ...int) *conversion {
+func NewConversion(mutiples int, base ...interface{}) *conversion {
 	c := new(conversion)
 
-	c.multiples = DefaultMultiples
-	if len(mutiples) != 0 {
-		c.multiples = mutiples[0]
+	c.multiples = mutiples
+	if mutiples%10 != 0 {
+		c.multiples = DefaultMultiples
 	}
 
-	c.base = ToFloat64(base)
+	c.base = 0
+	if len(base) != 0 {
+		c.base = ToFloat64(base[0])
+	}
 
 	return c
 }
@@ -32,12 +35,20 @@ func (c *conversion) BaseValue() float64 {
 	return c.base
 }
 
-func (c *conversion) ZoomOut() Result {
+func (c *conversion) ZoomOut(base ...interface{}) Result {
+	if len(base) != 0 {
+		c.base = ToFloat64(base[0])
+	}
+
 	c.result = Result(c.base * float64(c.multiples))
 	return c.result
 }
 
-func (c *conversion) ZoomIn() Result {
+func (c *conversion) ZoomIn(base ...interface{}) Result {
+	if len(base) != 0 {
+		c.base = ToFloat64(base[0])
+	}
+
 	c.result = Result(c.base / float64(c.multiples))
 	return c.result
 }
