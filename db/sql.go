@@ -18,6 +18,21 @@ const (
 	LIKE OP = "like"
 )
 
+func Count(sql string, param ...string) string {
+	p := "*"
+	if len(param) != 0 {
+		p = param[0]
+	}
+
+	sql = strings.Replace(sql, "\t", " ", -1)
+	sql = strings.Replace(sql, "\n", " ", -1)
+	sql = strings.Replace(sql, "\r", " ", -1)
+
+	start := strings.Index(sql, " from ")
+
+	return fmt.Sprintf("select count(%s) as count %s", p, sql[start+1:])
+}
+
 func AttachOr(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, "or")
 }
@@ -68,16 +83,16 @@ func attach(sql string, query interface{}, data interface{}, op OP, relation str
 	sql = strings.Replace(sql, "\r", " ", -1)
 
 	if strings.Contains(strings.ToLower(sql), " where ") || sql == "" {
-		sql = fmt.Sprintf(" %s %s %v %v '%v' ", sql, relation, query, op, data)
+		sql = fmt.Sprintf("%s %s %v %v '%v'", sql, relation, query, op, data)
 		return sql
 	}
 
-	sql = fmt.Sprintf(" %s where %v %v '%v' ", sql, query, op, data)
+	sql = fmt.Sprintf("%s where %v %v '%v'", sql, query, op, data)
 	return sql
 }
 
 func checkOp(op OP) bool {
-	ops := []interface{}{EQ, LT, LE, NE, GT, GE}
+	ops := []interface{}{EQ, LT, LE, NE, GT, GE, LIKE}
 
 	return chars.IsContain(ops, op)
 }
