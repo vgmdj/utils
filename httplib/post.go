@@ -9,6 +9,10 @@ import (
 	"net/url"
 )
 
+const (
+	ResponseResultContentType = "Result-Parse-Content-Type-vgmdj"
+)
+
 //PostJSON http method post, content type application/json
 func PostJSON(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
@@ -92,6 +96,9 @@ func post(url string, body []byte, respInfo interface{}, headers map[string]stri
 	defer resp.Body.Close()
 
 	contentType := resp.Header.Get("Content-Type")
+	if specified, ok := headers[ResponseResultContentType]; ok {
+		contentType = specified
+	}
 
 	return respParser(resp.Body, contentType, respInfo)
 }
