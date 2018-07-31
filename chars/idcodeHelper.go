@@ -4,6 +4,7 @@ import (
 	"fmt"
 	_ "github.com/vgmdj/gb2260/gbdata"
 	"github.com/vgmdj/utils/area"
+	"github.com/vgmdj/utils/logger"
 	"time"
 )
 
@@ -123,6 +124,20 @@ func CheckIdCode(idcode string) bool {
 	}
 	//默认返回错误
 	return false
+}
+
+func GetIdCodeCheckSum(idcode string) byte {
+	if len(idcode) != 18 && len(idcode) != 17 {
+		logger.Error("invalid length of idcode")
+		return ' '
+	}
+
+	sum := 0
+	for k, v := range idcode {
+		sum += (int(v) - 48) * idCardAlpha[k]
+	}
+	i := sum % 11
+	return idCardCheckSum[i]
 }
 
 func checkSum(idnum [18]byte) byte {

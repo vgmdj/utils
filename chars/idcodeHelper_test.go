@@ -51,4 +51,6 @@ func TestIdCodeHelper(t *testing.T) {
 
 	ast.Equal(idCode2.GetPlaceOfBirth().FullName(), "湖北省襄樊市襄阳县")
 
+	ast.Equal(string(chars.GetIdCodeCheckSum("320321199308227214")), "4")
+	ast.Equal(string(chars.GetIdCodeCheckSum("32032119930822721")), "4")
 }
