@@ -8,11 +8,12 @@ import (
 	"fmt"
 	"github.com/vgmdj/utils/httplib"
 	"net/url"
+	"strconv"
 	"time"
 )
 
 type (
-	rongLianSM struct {
+	RLYun struct {
 		RestURL     *url.URL
 		Account     string
 		Token       string
@@ -37,28 +38,48 @@ const (
 	APIVISION = "2013-12-26"
 )
 
-var (
-	rlConfig = []string{"serverIP", "serverPort", "account", "token", "appId"}
-)
+//NewRlClient
+//params are same as SetConfig(params map[string]interface{})
+func NewRlClient(params map[string]interface{}) *RLYun {
+	rlyun := &RLYun{}
+	rlyun.SetConfig(params)
+	return rlyun
+}
 
-func newRlClient(params map[string]string) (SMSClient, error) {
-	checkRlParams(params)
+//SetConfig "serverIP", "serverPort", "account", "token", "appId"
+func (client *RLYun) SetConfig(params map[string]interface{}) {
+	strParams := paramsToString(params)
 
 	u := &url.URL{
 		Scheme: "https",
-		Host:   fmt.Sprintf("%s:%s", params["serverIP"], params["serverPort"]),
-		Path:   fmt.Sprintf("/%s/Accounts/%s/SMS/TemplateSMS", APIVISION, params["account"]),
+		Host:   fmt.Sprintf("%s:%s", strParams["serverIP"], strParams["serverPort"]),
+		Path:   fmt.Sprintf("/%s/Accounts/%s/SMS/TemplateSMS", APIVISION, strParams["account"]),
 	}
 
-	return &rongLianSM{
-		RestURL: u,
-		Account: params["account"],
-		Token:   params["token"],
-		AppId:   params["appId"],
-	}, nil
+	client.RestURL = u
+	client.Account = strParams["account"]
+	client.Token = strParams["token"]
+	client.AppId = strParams["appId"]
 }
 
-func (client *rongLianSM) SendSM(templateId string, to string, args ...string) (err error) {
+func (client *RLYun) SendMsg(templateId string, to string, args interface{}) (err error) {
+	msgs := []string{}
+	switch args.(type) {
+	default:
+		return fmt.Errorf("invalid args")
+
+	case string:
+		msgs = append(msgs, args.(string))
+
+	case int:
+		msg := strconv.Itoa(args.(int))
+		msgs = append(msgs, msg)
+
+	case []string:
+		msgs = append(msgs, args.([]string)[:]...)
+
+	}
+
 	sig, auth := client.sigParamater()
 
 	values := url.Values{}
@@ -70,7 +91,7 @@ func (client *rongLianSM) SendSM(templateId string, to string, args ...string) (
 	headers["Content-Type"] = "application/json;charset=utf-8"
 	headers["Accept"] = "application/json"
 
-	body := rlSMRequest{AppId: client.AppId, TemplateId: templateId, To: to, Datas: args}
+	body := rlSMRequest{AppId: client.AppId, TemplateId: templateId, To: to, Datas: msgs}
 	resp := rlSMResponse{}
 
 	err = httplib.PostJSON(client.RestURL.String(), body, &resp, headers)
@@ -86,22 +107,11 @@ func (client *rongLianSM) SendSM(templateId string, to string, args ...string) (
 	return
 }
 
-func (client *rongLianSM) sigParamater() (string, string) {
+func (client *RLYun) sigParamater() (string, string) {
 	date := time.Now()
 	sig := getMd5String([]byte(fmt.Sprintf("%s%s%s", client.Account, client.Token, date.Format("20060102150405"))))
 	auth := getBase64String([]byte(fmt.Sprintf("%s:%s", client.Account, date.Format("20060102150405"))))
 	return sig, auth
-}
-
-func checkRlParams(params map[string]string) error {
-	for _, v := range rlConfig {
-		if _, ok := params[v]; !ok {
-			return fmt.Errorf("config %s no present", v)
-		}
-	}
-
-	return nil
-
 }
 
 func getMd5String(data []byte) string {

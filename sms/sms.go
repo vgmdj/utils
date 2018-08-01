@@ -1,11 +1,10 @@
 package sms
 
-import (
-	"fmt"
-)
+import "github.com/vgmdj/utils/logger"
 
 type SMSClient interface {
-	SendSM(templateId string, to string, data ...string) error
+	SetConfig(params map[string]interface{})
+	SendMsg(templateId string, to string, args interface{}) error
 }
 
 type SelectSystem uint16
@@ -21,22 +20,36 @@ type SMSFactory struct {
 	SMS SelectSystem
 }
 
-func (sf SMSFactory) NewSMSClient(params map[string]string) (SMSClient, error) {
+//NewSMSClient
+func (sf SMSFactory) NewSMSClient(params map[string]interface{}) SMSClient {
 	switch sf.SMS {
 	default:
-		return nil, fmt.Errorf("invalid sms type")
+		logger.Error("invalid sms type")
+		return nil
 
 	case SMS_YUNTONGXUN:
-		return newRlClient(params)
-
-	case SMS_ALIYUN:
-		return nil, fmt.Errorf("not support now")
-
-	case SMS_TENCENTCLOUD:
-		return nil, fmt.Errorf("not support now")
+		return NewRlClient(params)
 
 	case SMS_WECHAT:
-		return nil, fmt.Errorf("not support now")
+		return NewWxClient(params)
 
+	case SMS_ALIYUN:
+		return nil
+
+	case SMS_TENCENTCLOUD:
+		return nil
 	}
+}
+
+func paramsToString(params map[string]interface{}) map[string]string {
+	result := make(map[string]string)
+
+	for k, v := range params {
+		value, ok := v.(string)
+		if ok {
+			result[k] = value
+		}
+	}
+
+	return result
 }
