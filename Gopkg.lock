@@ -2,71 +2,133 @@
 
 
 [[projects]]
+  digest = "1:4b94878e125f31ec67c892ecfe38c13211da40653281588598218f807ae72bf7"
   name = "github.com/Luxurioust/excelize"
   packages = ["."]
+  pruneopts = "UT"
   revision = "eb62256d165607c6877ce88efbba10c119137b3d"
   version = "v1.3.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:673c9c345144a4a631ae6f97a80e119367ad2d898306fcb05e64ce29d3b834d5"
   name = "github.com/axgle/mahonia"
   packages = ["."]
+  pruneopts = "UT"
   revision = "3358181d7394e26beccfae0ffde05193ef3be33a"
 
 [[projects]]
   branch = "master"
+  digest = "1:d37cea259e415b39c6309b3f53397fe0dc2997aa701e3927c5dbb9821d130d9d"
   name = "github.com/belogik/goes"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e54d722c3aff588e4c737fe11c07359019240824"
 
 [[projects]]
   branch = "master"
+  digest = "1:c4aa6ae1c0e14e92c6e0dd2572514e51704288b16287a2ddc6d07518959c4003"
+  name = "github.com/chanxuehong/rand"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "560f6cc0eaa52d1919e05e8dba883df1998bcd66"
+
+[[projects]]
+  branch = "master"
+  digest = "1:1b194d18c9c57a0b9e80580f4975aaaf18b01fa729973e668c76d4a86cf2b89e"
+  name = "github.com/chanxuehong/util"
+  packages = ["security"]
+  pruneopts = "UT"
+  revision = "3283ef9c9f257d87e79ade33fc113ec8a22c3b00"
+
+[[projects]]
+  branch = "master"
+  digest = "1:05756b73bf7eae03d6f6c5f0ae83de42ce296e7d83336563dd9ce2072106d5e6"
   name = "github.com/cloudflare/golz4"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ef862a3cdc58a6f1fee4e3af3d44fbe279194cde"
 
 [[projects]]
+  digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
+  pruneopts = "UT"
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:fb46255681497314debedde38b64be32a75bae50bad107586c22f1662bf2d352"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = "UT"
   revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
   version = "v1.37.0"
 
 [[projects]]
+  digest = "1:9a688317f3231e0175b3429033f44411906c0ce119361b7b5019d01375f8cff7"
   name = "github.com/gogo/protobuf"
   packages = ["proto"]
+  pruneopts = "UT"
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
+  pruneopts = "UT"
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
 
 [[projects]]
   branch = "master"
+  digest = "1:6821bdf5fd1822feef766cc899a293cfadae430feb926dd42cd19cb0a9970f61"
   name = "golang.org/x/crypto"
   packages = [
     "pbkdf2",
-    "scrypt"
+    "scrypt",
   ]
+  pruneopts = "UT"
   revision = "7f39a6fea4fe9364fb61e1def6a268a51b4f3a06"
+
+[[projects]]
+  branch = "v2"
+  digest = "1:3f6a7f25a1f807a07835b3dff17806515b50cedd1daaf8a88a9040dd726ace97"
+  name = "gopkg.in/chanxuehong/wechat.v2"
+  packages = [
+    "internal/debug/api",
+    "internal/debug/api/retry",
+    "internal/debug/callback",
+    "internal/util",
+    "mp/core",
+    "mp/message/template",
+    "util",
+  ]
+  pruneopts = "UT"
+  revision = "394f00821fb15c1cf2865c2ad67c30d6ae2d94b3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9f6a9846a3a82548616a739b09a488a8f5496404fd5de6470cacd05a6cb0bea5"
+  input-imports = [
+    "github.com/Luxurioust/excelize",
+    "github.com/axgle/mahonia",
+    "github.com/belogik/goes",
+    "github.com/cloudflare/golz4",
+    "github.com/go-ini/ini",
+    "github.com/gogo/protobuf/proto",
+    "github.com/stretchr/testify/assert",
+    "golang.org/x/crypto/scrypt",
+    "gopkg.in/chanxuehong/wechat.v2/mp/message/template",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
