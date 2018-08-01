@@ -12,7 +12,7 @@ func TestRLYun(t *testing.T) {
 
 	rlClient := SMSFactory{SMS_YUNTONGXUN}.NewSMSClient(params)
 
-	err := rlClient.SendMsg("1", "189xxxxxxxx", []string{"010000", "5"})
+	err := rlClient.SendMsg("1", "189xxxxxxxx", "010000", "5")
 	if err != nil {
 		t.Error(err)
 		return
@@ -22,10 +22,12 @@ func TestRLYun(t *testing.T) {
 
 func TestWeChat(t *testing.T) {
 	params := make(map[string]interface{})
-	params[""] = ""
+	params["appid"] = "wx6ddf008341937de1"
+	params["secret"] = "3aefe696e17fa29ca0e1ad14c8ec36ee"
 
 	wxsms := SMSFactory{SMS_WECHAT}.NewSMSClient(params)
-	err := wxsms.SendMsg()
+	err := wxsms.SendMsg("FD-7gHRWUEj-fXOBRQh07uW9f1uSAdZF0Y8D-_YkZZo", "omHgCwm_DFWghRVayaJ35AggBLG8",
+		"first", "k1", "k2", "k3", "k4", "remark")
 	if err != nil {
 		t.Error(err)
 		return

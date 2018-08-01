@@ -4,7 +4,7 @@ import "github.com/vgmdj/utils/logger"
 
 type SMSClient interface {
 	SetConfig(params map[string]interface{})
-	SendMsg(templateId string, to string, args interface{}) error
+	SendMsg(templateId string, to string, args ...string) error
 }
 
 type SelectSystem uint16

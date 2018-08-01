@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"github.com/vgmdj/utils/httplib"
 	"net/url"
-	"strconv"
 	"time"
 )
 
@@ -62,23 +61,7 @@ func (client *RLYun) SetConfig(params map[string]interface{}) {
 	client.AppId = strParams["appId"]
 }
 
-func (client *RLYun) SendMsg(templateId string, to string, args interface{}) (err error) {
-	msgs := []string{}
-	switch args.(type) {
-	default:
-		return fmt.Errorf("invalid args")
-
-	case string:
-		msgs = append(msgs, args.(string))
-
-	case int:
-		msg := strconv.Itoa(args.(int))
-		msgs = append(msgs, msg)
-
-	case []string:
-		msgs = append(msgs, args.([]string)[:]...)
-
-	}
+func (client *RLYun) SendMsg(templateId string, to string, args ...string) (err error) {
 
 	sig, auth := client.sigParamater()
 
@@ -91,7 +74,7 @@ func (client *RLYun) SendMsg(templateId string, to string, args interface{}) (er
 	headers["Content-Type"] = "application/json;charset=utf-8"
 	headers["Accept"] = "application/json"
 
-	body := rlSMRequest{AppId: client.AppId, TemplateId: templateId, To: to, Datas: msgs}
+	body := rlSMRequest{AppId: client.AppId, TemplateId: templateId, To: to, Datas: args}
 	resp := rlSMResponse{}
 
 	err = httplib.PostJSON(client.RestURL.String(), body, &resp, headers)

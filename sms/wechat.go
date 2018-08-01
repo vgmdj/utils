@@ -1,6 +1,7 @@
 package sms
 
 import (
+	"fmt"
 	"github.com/vgmdj/utils/logger"
 	"gopkg.in/chanxuehong/wechat.v2/mp/core"
 	"gopkg.in/chanxuehong/wechat.v2/mp/message/template"
@@ -35,11 +36,16 @@ func (wx *WeChat) SetConfig(params map[string]interface{}) {
 
 }
 
-func (wx *WeChat) SendMsg(templateId string, to string, msg interface{}) (err error) {
+type wxData struct {
+	Value string `json:"value"`
+	Color string `json:"color"`
+}
+
+func (wx *WeChat) SendMsg(templateId string, to string, args ...string) (err error) {
 	tm2 := template.TemplateMessage2{
 		ToUser:     to,
 		TemplateId: templateId,
-		Data:       msg,
+		Data:       wx.setData(args[:]),
 	}
 
 	var msgID int64
@@ -52,4 +58,22 @@ func (wx *WeChat) SendMsg(templateId string, to string, msg interface{}) (err er
 	logger.Info(msgID)
 
 	return
+}
+
+func (wx *WeChat) setData(args []string) map[string]wxData {
+	data := make(map[string]wxData)
+
+	data["first"] = wxData{Value: args[0]}
+	for i := 1; i < len(args)-1; i++ {
+		key := fmt.Sprintf("keyword%d", i)
+		data[key] = wxData{
+			Value: args[i],
+		}
+	}
+	data["remark"] = wxData{Value: args[len(args)-1]}
+
+	logger.Info(data)
+
+	return data
+
 }
