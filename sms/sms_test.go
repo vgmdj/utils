@@ -26,7 +26,9 @@ func TestWeChat(t *testing.T) {
 	params["secret"] = "3aefe696e17fa29ca0e1ad14c8ec36ee"
 
 	wxsms := SMSFactory{SMS_WECHAT}.NewSMSClient(params)
-	wxsms.SetDefaultTemplate(Template{
+	template := Template{
+		TemplateId: "FD-7gHRWUEj-fXOBRQh07uW9f1uSAdZF0Y8D-_YkZZo",
+		Keys:       []string{"first", "keyword1", "keyword2", "keyword3", "keyword4", "remark"},
 		Color: map[string]string{
 			"first":    "#0000CD",
 			"keyword1": "#0000FF",
@@ -35,8 +37,17 @@ func TestWeChat(t *testing.T) {
 			"keyword4": "#1E90FF",
 			"remark":   "#191970",
 		},
-	})
-	err := wxsms.SendMsg("FD-7gHRWUEj-fXOBRQh07uW9f1uSAdZF0Y8D-_YkZZo", "omHgCwm_DFWghRVayaJ35AggBLG8",
+	}
+
+	err := wxsms.SendMsgWithTemplate(template, "omHgCwm_DFWghRVayaJ35AggBLG8",
+		"first'", "k1'", "k2'", "k3'", "k4'", "remark'")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	wxsms.SetDefaultTemplate(template)
+	err = wxsms.SendMsg("omHgCwm_DFWghRVayaJ35AggBLG8",
 		"first", "k1", "k2", "k3", "k4", "remark")
 	if err != nil {
 		t.Error(err)

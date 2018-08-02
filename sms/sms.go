@@ -3,9 +3,10 @@ package sms
 import "github.com/vgmdj/utils/logger"
 
 type SMSClient interface {
-	SetConfig(params map[string]interface{})
-	SetDefaultTemplate(template Template)
-	SendMsg(templateId, to string, args ...string) error
+	SetConfig(map[string]interface{})
+	SetDefaultTemplate(Template)
+	SendMsg(string, ...string) error
+	SendMsgWithTemplate(Template, string, ...string) error
 }
 
 type SelectSystem uint16
@@ -56,5 +57,7 @@ func paramsToString(params map[string]interface{}) map[string]string {
 }
 
 type Template struct {
-	Color map[string]string
+	TemplateId string
+	Keys       []string
+	Color      map[string]string
 }

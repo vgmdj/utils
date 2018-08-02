@@ -9,6 +9,7 @@ import (
 	"github.com/vgmdj/utils/httplib"
 	"github.com/vgmdj/utils/logger"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -19,6 +20,8 @@ type (
 		Token       string
 		AppId       string
 		SoftVersion string
+
+		DefaultTemplate Template
 	}
 
 	rlSMRequest struct {
@@ -38,12 +41,19 @@ const (
 	APIVISION = "2013-12-26"
 )
 
+var (
+	rlc    *RLYun
+	rlSync sync.Once
+)
+
 //NewRlClient
 //params are same as SetConfig(params map[string]interface{})
 func NewRlClient(params map[string]interface{}) *RLYun {
-	rlyun := &RLYun{}
-	rlyun.SetConfig(params)
-	return rlyun
+	rlSync.Do(func() {
+		rlc = &RLYun{}
+	})
+	rlc.SetConfig(params)
+	return rlc
 }
 
 //SetConfig "serverIP", "serverPort", "account", "token", "appId"
@@ -66,7 +76,7 @@ func (client *RLYun) SetDefaultTemplate(template Template) {
 	logger.Warning("don not need to set template")
 }
 
-func (client *RLYun) SendMsg(templateId string, to string, args ...string) (err error) {
+func (client *RLYun) SendMsg(to string, args ...string) (err error) {
 
 	sig, auth := client.sigParamater()
 
@@ -79,7 +89,35 @@ func (client *RLYun) SendMsg(templateId string, to string, args ...string) (err 
 	headers["Content-Type"] = "application/json;charset=utf-8"
 	headers["Accept"] = "application/json"
 
-	body := rlSMRequest{AppId: client.AppId, TemplateId: templateId, To: to, Datas: args}
+	body := rlSMRequest{AppId: client.AppId, TemplateId: client.DefaultTemplate.TemplateId, To: to, Datas: args}
+	resp := rlSMResponse{}
+
+	err = httplib.PostJSON(client.RestURL.String(), body, &resp, headers)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	if resp.StatusCode != "000000" {
+		return errors.New(resp.StatusMsg)
+	}
+
+	return
+}
+
+func (client *RLYun) SendMsgWithTemplate(template Template, to string, args ...string) (err error) {
+	sig, auth := client.sigParamater()
+
+	values := url.Values{}
+	values.Add("sig", sig)
+	client.RestURL.RawQuery = values.Encode()
+
+	headers := make(map[string]string)
+	headers["Authorization"] = auth
+	headers["Content-Type"] = "application/json;charset=utf-8"
+	headers["Accept"] = "application/json"
+
+	body := rlSMRequest{AppId: client.AppId, TemplateId: template.TemplateId, To: to, Datas: args}
 	resp := rlSMResponse{}
 
 	err = httplib.PostJSON(client.RestURL.String(), body, &resp, headers)
