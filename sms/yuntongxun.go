@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/vgmdj/utils/httplib"
+	"github.com/vgmdj/utils/logger"
 	"net/url"
 	"time"
 )
@@ -59,6 +60,10 @@ func (client *RLYun) SetConfig(params map[string]interface{}) {
 	client.Account = strParams["account"]
 	client.Token = strParams["token"]
 	client.AppId = strParams["appId"]
+}
+
+func (client *RLYun) SetDefaultTemplate(template Template) {
+	logger.Warning("don not need to set template")
 }
 
 func (client *RLYun) SendMsg(templateId string, to string, args ...string) (err error) {
