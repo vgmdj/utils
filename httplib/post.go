@@ -52,7 +52,7 @@ func PostXML(postUrl string, body interface{}, respInfo interface{}, headers map
 }
 
 //PostForm http method post , content type x-www-form-urlencoded
-func PostForm(postUrl string, respInfo interface{}, formValues map[string]string, headers map[string]string) (err error) {
+func PostForm(postUrl string, formValues map[string]string, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -67,6 +67,14 @@ func PostForm(postUrl string, respInfo interface{}, formValues map[string]string
 	}
 
 	return post(postUrl, []byte(values.Encode()), respInfo, headers)
+}
+
+func PostBytes(postUrl string, bytes []byte, respInfo interface{}, headers map[string]string) (err error) {
+	if len(headers) == 0 {
+		headers = make(map[string]string)
+	}
+
+	return post(postUrl, bytes, respInfo, headers)
 }
 
 //post http post request
