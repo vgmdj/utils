@@ -26,10 +26,6 @@ func AesCBCEncrypt(plaintext, key, iv string) (code []byte, err error) {
 	return
 }
 
-func AesCBCDecrypt() {
-
-}
-
 func aesEncrypt(ext, key string) (code []byte, err error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
