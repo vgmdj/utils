@@ -52,7 +52,11 @@ func NewRlClient(params map[string]interface{}) *RLYun {
 	rlSync.Do(func() {
 		rlc = &RLYun{}
 	})
-	rlc.SetConfig(params)
+
+	if len(params) != 0 {
+		rlc.SetConfig(params)
+	}
+
 	return rlc
 }
 

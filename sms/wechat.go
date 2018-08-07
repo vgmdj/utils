@@ -23,7 +23,11 @@ func NewWxClient(params map[string]interface{}) *WeChat {
 	wxSync.Do(func() {
 		wxc = &WeChat{}
 	})
-	wxc.SetConfig(params)
+
+	if len(params) != 0 {
+		wxc.SetConfig(params)
+	}
+
 	return wxc
 }
 
