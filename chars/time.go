@@ -6,16 +6,16 @@ import (
 
 //数据库中时间一般以时间戳或无其他符号纯数字形式存在
 
-//TimeIntPRC 中国纯数字时间
-func TimeIntPRC(t time.Time) string {
+//TimeNumPRC 中国纯数字时间
+func TimeNumPRC(t time.Time) string {
 	china, _ := time.LoadLocation("PRC")
 	cstTime := t.In(china).Format("20060102150405")
 
 	return cstTime
 }
 
-//TimeIntYMD 中国数字时间，只取年月日
-func TimeIntYMD(t time.Time) string {
+//TimeNumYMD 中国数字时间，只取年月日
+func TimeNumYMD(t time.Time) string {
 	china, _ := time.LoadLocation("PRC")
 	cstTime := t.In(china).Format("20060102")
 
@@ -40,6 +40,8 @@ type restTime struct {
 	restTimeFrom  time.Duration
 	restTimeTo    time.Duration
 	crossMidNight bool
+
+	extraWaitTime time.Duration
 }
 
 func RestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) *restTime {
@@ -50,8 +52,13 @@ func RestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) *restTime {
 
 func (rt *restTime) SetRestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) {
 	rt.restTimeFrom = time.Duration(hFrom)*time.Hour + time.Duration(mFrom)*time.Minute
-	rt.restTimeTo = time.Duration(hTo)*time.Hour + time.Duration(mTo)*time.Minute
+	rt.restTimeTo = time.Duration(hTo)*time.Hour + time.Duration(mTo)*time.Minute + time.Second*60
 	rt.crossMidNight = crossMidNight
+}
+
+//SetExtWaitTime set extra wait time
+func (rt *restTime) SetExtWaitTime(extra time.Duration) {
+	rt.extraWaitTime = extra
 }
 
 func (rt *restTime) IsRestTime(t time.Time) bool {
@@ -59,16 +66,37 @@ func (rt *restTime) IsRestTime(t time.Time) bool {
 }
 
 func (rt *restTime) IsWorkingTime(t time.Time) bool {
-	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute
+	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute +
+		time.Duration(t.Second())*time.Second
 
-	if !rt.crossMidNight && now >= rt.restTimeFrom && now <= rt.restTimeTo {
+	if !rt.crossMidNight && now >= rt.restTimeFrom && now < rt.restTimeTo {
 		return false
 	}
 
-	if rt.crossMidNight && (now >= rt.restTimeFrom || now <= rt.restTimeTo) {
+	if rt.crossMidNight && (now >= rt.restTimeFrom || now < rt.restTimeTo) {
 		return false
 	}
 
 	return true
+
+}
+
+func (rt *restTime) WaitTime(t time.Time) time.Duration {
+	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute +
+		time.Duration(t.Second())*time.Second
+
+	if !rt.crossMidNight && now >= rt.restTimeFrom && now < rt.restTimeTo {
+		return rt.restTimeTo - now + rt.extraWaitTime
+	}
+
+	if rt.crossMidNight && now >= rt.restTimeFrom {
+		return Time24Sub(t) + rt.restTimeTo + rt.extraWaitTime
+	}
+
+	if rt.crossMidNight && now < rt.restTimeTo {
+		return rt.restTimeTo - now + rt.extraWaitTime
+	}
+
+	return rt.extraWaitTime
 
 }
