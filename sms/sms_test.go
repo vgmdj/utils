@@ -61,8 +61,8 @@ func TestWeChat(t *testing.T) {
 }
 
 /*
-加油卡充值成功通知
-{{first.DATA}} 网点：{{keyword1.DATA}} 交易类型：{{keyword2.DATA}} 交易金额：{{keyword3.DATA}} 交易日期：{{keyword4.DATA}} {{remark.DATA}}
+充值结果通知
+{{first.DATA}} 平台：{{keyword1.DATA}} 订单编号：{{keyword2.DATA}} 充值金额：{{keyword3.DATA}} 时间：{{keyword4.DATA}} {{remark.DATA}}
 */
 func TestWeChat1(t *testing.T) {
 	params := make(map[string]interface{})
@@ -71,7 +71,7 @@ func TestWeChat1(t *testing.T) {
 
 	wxsms := SMSFactory{SMS_WECHAT}.NewSMSClient(params)
 	template := Template{
-		TemplateId: "gCaF3HNukgVqDX8rPy0Etj6owwfrR1uReBywx9a6A_8",
+		TemplateId: "1vvCKguqKO_gQ3m--fQxGeLK629x_W9RZez2ZhJPTLE",
 		Keys:       []string{"first", "keyword1", "keyword2", "keyword3", "keyword4", "remark"},
 		Color: map[string]string{
 			"first":    "#0000CD",
@@ -84,7 +84,7 @@ func TestWeChat1(t *testing.T) {
 	}
 
 	err := wxsms.SendMsgWithTemplate(template, "omHgCwm_DFWghRVayaJ35AggBLG8",
-		"加油卡*123456充值成功", "充值网点", "额度账收款", "1000元", "2014-09-22 08:10", "感谢您的使用。")
+		"加油卡*123456充值成功", "85生活", "20181314151617", "1000元", "2014-09-22 08:10", "感谢您的使用。")
 	if err != nil {
 		t.Error(err)
 		return
