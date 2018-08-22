@@ -26,7 +26,7 @@ func ToInt(num interface{}) int {
 		return int(num.(int64))
 
 	case float64:
-		return int(num.(float64))
+		return int(math.Floor(num.(float64) + 0.5))
 
 	case bool:
 		if num.(bool) {

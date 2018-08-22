@@ -1,6 +1,8 @@
 package chars
 
-import "sync"
+import (
+	"sync"
+)
 
 const (
 	//DefaultMultiples 缺省缩放倍数

@@ -26,7 +26,7 @@ func TestConversion(t *testing.T) {
 	ast.Equal(c2.ZoomIn().ToInt(), 0)
 	ast.Equal(c2.ZoomIn().ToFloat64(), 0.32)
 
-	ast.Equal(Sc().ZoomOut(32).ToString(), "3200.00")
+	ast.Equal(Sc().ZoomOut("2.324").ToInt(), 232)
 	ast.Equal(Sc().ZoomIn(3200).ToString(), "32.00")
 
 }
