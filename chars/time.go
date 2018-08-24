@@ -56,7 +56,7 @@ func (rt *restTime) SetRestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) 
 	rt.crossMidNight = crossMidNight
 }
 
-//SetExtWaitTime set extra wait time
+//SetExtWaitTime set extra wait time, only for rest time, not working in other time
 func (rt *restTime) SetExtWaitTime(extra time.Duration) {
 	rt.extraWaitTime = extra
 }
@@ -97,6 +97,6 @@ func (rt *restTime) WaitTime(t time.Time) time.Duration {
 		return rt.restTimeTo - now + rt.extraWaitTime
 	}
 
-	return rt.extraWaitTime
+	return 0
 
 }

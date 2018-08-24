@@ -27,6 +27,7 @@ func TestRestTime(t *testing.T) {
 	ast.Equal(rt.WaitTime(t3),time.Minute*66)
 
 	t4 := time.Date(2018, time.July, 1, 14, 1, 0, 0, time.UTC)
+	rt.SetExtWaitTime(time.Second*30)
 	ast.Equal(rt.IsWorkingTime(t4), true)
 	ast.Equal(rt.IsRestTime(t4), false)
 	ast.Equal(rt.WaitTime(t4),time.Duration(0))
