@@ -1,0 +1,41 @@
+# github.com/Luxurioust/excelize v1.3.0
+github.com/Luxurioust/excelize
+# github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
+github.com/axgle/mahonia
+# github.com/belogik/goes v0.0.0-20151229125003-e54d722c3aff
+github.com/belogik/goes
+# github.com/chanxuehong/rand v0.0.0-20180428235808-560f6cc0eaa5
+github.com/chanxuehong/rand
+# github.com/chanxuehong/util v0.0.0-20180507110909-3283ef9c9f25
+github.com/chanxuehong/util/security
+# github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58
+github.com/cloudflare/golz4
+# github.com/davecgh/go-spew v1.1.0
+github.com/davecgh/go-spew/spew
+# github.com/go-ini/ini v1.37.0
+github.com/go-ini/ini
+# github.com/gogo/protobuf v1.0.0
+github.com/gogo/protobuf/proto
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/stretchr/testify v1.2.2
+github.com/stretchr/testify/assert
+# github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
+github.com/vgmdj/gb2260/gbdata
+# github.com/vgmdj/utils v0.0.0-20180827053707-19428332d0ef
+github.com/vgmdj/utils/area
+github.com/vgmdj/utils/logger
+github.com/vgmdj/utils/chars
+github.com/vgmdj/utils/logger/logs
+github.com/vgmdj/utils/httplib
+# golang.org/x/crypto v0.0.0-20180619200235-7f39a6fea4fe
+golang.org/x/crypto/scrypt
+golang.org/x/crypto/pbkdf2
+# gopkg.in/chanxuehong/wechat.v2 v2.0.0-20180707072629-394f00821fb1
+gopkg.in/chanxuehong/wechat.v2/mp/core
+gopkg.in/chanxuehong/wechat.v2/mp/message/template
+gopkg.in/chanxuehong/wechat.v2/internal/debug/api
+gopkg.in/chanxuehong/wechat.v2/internal/debug/api/retry
+gopkg.in/chanxuehong/wechat.v2/internal/debug/callback
+gopkg.in/chanxuehong/wechat.v2/internal/util
+gopkg.in/chanxuehong/wechat.v2/util
