@@ -1,4 +1,4 @@
-module utils
+module github.com/vgmdj/utils
 
 require (
 	github.com/Luxurioust/excelize v1.3.0
@@ -7,13 +7,11 @@ require (
 	github.com/chanxuehong/rand v0.0.0-20180428235808-560f6cc0eaa5 // indirect
 	github.com/chanxuehong/util v0.0.0-20180507110909-3283ef9c9f25 // indirect
 	github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58
-	github.com/davecgh/go-spew v1.1.0 // indirect
-	github.com/go-ini/ini v1.37.0
-	github.com/gogo/protobuf v1.0.0
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/go-ini/ini v1.38.2
+	github.com/gogo/protobuf v1.1.1
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.2
 	github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
-	github.com/vgmdj/utils v0.0.0-20180827053707-19428332d0ef
-	golang.org/x/crypto v0.0.0-20180619200235-7f39a6fea4fe
-	gopkg.in/chanxuehong/wechat.v2 v2.0.0-20180707072629-394f00821fb1
+	gopkg.in/chanxuehong/wechat.v2 v2.0.0-20180803114548-d901fc2b67e4
 )
