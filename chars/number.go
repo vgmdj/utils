@@ -1,11 +1,13 @@
 package chars
 
 import (
-	"github.com/vgmdj/utils/logger"
 	"math"
 	"strconv"
+
+	"github.com/vgmdj/utils/logger"
 )
 
+//ToInt 转换成int格式
 func ToInt(num interface{}) int {
 	switch num.(type) {
 	default:
@@ -44,6 +46,7 @@ func ToInt(num interface{}) int {
 	}
 }
 
+//ToFloat64 转换成float64格式
 func ToFloat64(num interface{}) float64 {
 	switch num.(type) {
 	default:
@@ -68,8 +71,9 @@ func ToFloat64(num interface{}) float64 {
 	}
 }
 
+//ToString 转换成string
 func ToString(num interface{}, prec ...int) string {
-	var p int = 4
+	var p = 4
 	if len(prec) != 0 {
 		p = prec[0]
 	}
@@ -97,6 +101,7 @@ func ToString(num interface{}, prec ...int) string {
 	}
 }
 
+//TakeLeftInt 取数字左n位
 func TakeLeftInt(num int, n int) int {
 	for num >= int(math.Pow10(n)) {
 		num /= 10
@@ -105,7 +110,7 @@ func TakeLeftInt(num int, n int) int {
 	return num
 }
 
-//TODO finish this function
+//TekeRightInt TODO finish this function
 func TekeRightInt(num int, n int) int {
 
 	return 0

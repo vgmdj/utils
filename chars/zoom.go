@@ -10,19 +10,20 @@ const (
 )
 
 var (
-	single *conversion
+	single *Conversion
 	once   sync.Once
 )
 
-type conversion struct {
+//Conversion 放大缩小转换
+type Conversion struct {
 	base      float64
 	result    Result
 	multiples int
 }
 
 //NewConversion first param is base, second param is multiples
-func NewConversion(params ...interface{}) *conversion {
-	c := new(conversion)
+func NewConversion(params ...interface{}) *Conversion {
+	c := new(Conversion)
 
 	c.base = 0
 	if len(params) != 0 {
@@ -35,22 +36,25 @@ func NewConversion(params ...interface{}) *conversion {
 }
 
 //Sc single pattern return the same conversion
-func Sc() *conversion {
+func Sc() *Conversion {
 	once.Do(func() {
 		single = NewConversion()
 	})
 	return single
 }
 
-func (c *conversion) SetMultiples(multiples int) {
+//SetMultiples 设置倍数
+func (c *Conversion) SetMultiples(multiples int) {
 	c.multiples = multiples
 }
 
-func (c conversion) BaseValue() float64 {
+//BaseValue 设置基数
+func (c Conversion) BaseValue() float64 {
 	return c.base
 }
 
-func (c conversion) ZoomOut(base ...interface{}) Result {
+//ZoomOut 放大
+func (c Conversion) ZoomOut(base ...interface{}) Result {
 	if len(base) != 0 {
 		c.base = ToFloat64(base[0])
 	}
@@ -59,7 +63,8 @@ func (c conversion) ZoomOut(base ...interface{}) Result {
 	return c.result
 }
 
-func (c conversion) ZoomIn(base ...interface{}) Result {
+//ZoomIn 缩小
+func (c Conversion) ZoomIn(base ...interface{}) Result {
 	if len(base) != 0 {
 		c.base = ToFloat64(base[0])
 	}
@@ -92,10 +97,12 @@ func precision(multiples int) int {
 
 }
 
+//Result 转换结果
 type Result float64
 
+//ToString 字符显示
 func (r Result) ToString(multiples ...int) string {
-	var m int = DefaultMultiples
+	var m = DefaultMultiples
 	if len(multiples) != 0 {
 		m = multiples[0]
 	}
@@ -103,10 +110,12 @@ func (r Result) ToString(multiples ...int) string {
 	return ToString(float64(r), precision(m))
 }
 
+//ToInt 整数显示
 func (r Result) ToInt() int {
 	return ToInt(float64(r))
 }
 
+//ToFloat64 浮点数显示
 func (r Result) ToFloat64() float64 {
 	return ToFloat64(float64(r))
 }

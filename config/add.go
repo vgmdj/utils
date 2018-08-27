@@ -12,6 +12,7 @@ const (
 	tag = "config"
 )
 
+//AddConfig 添加配置
 func (c *Conf) AddConfig(sec string, obj interface{}) (err error) {
 	rv := reflect.ValueOf(obj).Elem()
 	// dereference pointer

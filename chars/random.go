@@ -129,13 +129,12 @@ func RandomStringSpec1(count uint, set string) string {
 	return RandomStringSpec0(count, []rune(set))
 }
 
-// RandomAscii .
+// RandomASCII .
 // Creates a random string whose length is the number of characters
 // specified.
-//
 // Characters will be chosen from the set of characters whose
 // ASCII value is between 32 and 126 (inclusive).
-func RandomAscii(count uint) string {
+func RandomASCII(count uint) string {
 	return RandomSpec1(count, 32, 127, false, false)
 }
 

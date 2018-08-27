@@ -2,9 +2,10 @@ package files
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type Ts struct {
@@ -20,7 +21,7 @@ func TestFile(t *testing.T) {
 
 	file.SetFileName("test.json")
 	ts := Ts{"testJson", 1}
-	err := file.WriteJsonTo(ts)
+	err := file.WriteJSONTo(ts)
 	if err != nil {
 		t.Error(err)
 		return

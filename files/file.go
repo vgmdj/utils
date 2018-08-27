@@ -8,30 +8,32 @@ import (
 	"sync"
 )
 
-type file struct {
+//File 文件
+type File struct {
 	fileName string
 	mutex    sync.RWMutex
 }
 
-func NewFile(fileName string) *file {
+//NewFile 初始化
+func NewFile(fileName string) *File {
 	if fileName == "" {
 		fmt.Println("need params filename")
 		return nil
 	}
 
-	return &file{
+	return &File{
 		fileName: fileName,
 	}
 
 }
 
 //SetFileName local file name set
-func (lf *file) SetFileName(fileName string) {
+func (lf *File) SetFileName(fileName string) {
 	lf.fileName = fileName
 }
 
-//CheckFileIsExist 判断文件是否存在，存在返回true，不存在返回false
-func (lf *file) IsExist() bool {
+//IsExist 判断文件是否存在，存在返回true，不存在返回false
+func (lf *File) IsExist() bool {
 	var exist = true
 	if _, err := os.Stat(lf.fileName); os.IsNotExist(err) {
 		exist = false
@@ -39,7 +41,8 @@ func (lf *file) IsExist() bool {
 	return exist
 }
 
-func (lf *file) ReadFile() (contents []byte, err error) {
+//ReadFile 读取文件内容
+func (lf *File) ReadFile() (contents []byte, err error) {
 	lf.mutex.RLock()
 	defer lf.mutex.RUnlock()
 
@@ -57,7 +60,7 @@ func (lf *file) ReadFile() (contents []byte, err error) {
 
 //CopyFileTo 从指定位置复制创建出一个新的文件
 //需先调用IsExist判断文件是否存在,如果不存在则返回错误
-func (lf *file) CopyFileTo(destFile string) (err error) {
+func (lf *File) CopyFileTo(destFile string) (err error) {
 	var (
 		fileContent []byte //temp file content
 	)
@@ -78,7 +81,7 @@ func (lf *file) CopyFileTo(destFile string) (err error) {
 }
 
 //ParseFileTo 将文件中的内容解析到给出结构体中去
-func (lf *file) ParseFileTo(parseStruct interface{}) (err error) {
+func (lf *File) ParseFileTo(parseStruct interface{}) (err error) {
 	var (
 		fileContent []byte //temp file content
 	)
@@ -96,7 +99,7 @@ func (lf *file) ParseFileTo(parseStruct interface{}) (err error) {
 }
 
 //WriteContentTo 根据传来内容写入目标文件
-func (lf *file) WriteContentTo(toWriteContent []byte) (err error) {
+func (lf *File) WriteContentTo(toWriteContent []byte) (err error) {
 	lf.mutex.Lock()
 	defer lf.mutex.Unlock()
 
@@ -107,8 +110,8 @@ func (lf *file) WriteContentTo(toWriteContent []byte) (err error) {
 	return
 }
 
-//WriteContentTo 根据传来内容写入目标文件
-func (lf *file) WriteJsonTo(toWriteContent interface{}) (err error) {
+//WriteJSONTo 根据传来内容写入目标文件
+func (lf *File) WriteJSONTo(toWriteContent interface{}) (err error) {
 	bts, err := json.Marshal(toWriteContent)
 	if err != nil {
 		fmt.Println(toWriteContent)

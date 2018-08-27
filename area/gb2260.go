@@ -6,6 +6,7 @@ import (
 	"sync"
 )
 
+//LatestRevision 最近年份
 const LatestRevision = "2018"
 
 var (
@@ -13,8 +14,10 @@ var (
 	mutex          sync.RWMutex
 )
 
+//Selector 选择器
 type Selector struct{}
 
+//Register 注册器
 func (s *Selector) Register(revision string, gb2260 map[string]string) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -29,7 +32,7 @@ func (s Selector) Revisions() (list []string) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	for revision, _ := range gb2260Selector {
+	for revision := range gb2260Selector {
 		list = append(list, revision)
 	}
 	sort.Sort(sort.Reverse(sort.StringSlice(list)))
@@ -55,24 +58,26 @@ func newGB2260(revision ...string) Area {
 	return &gb2260{gb2260Selector[rev]}
 }
 
+//SetRevision 设置年份
 func (gb *gb2260) SetRevision(revision string) {
 	gb.gb = gb2260Selector[revision]
 }
 
-func (gb *gb2260) Get(code string) *AreaInfo {
+//Get 获取地域信息
+func (gb *gb2260) Get(code string) *Info {
 	if len(code) != 6 {
 		return nil
 	}
 
-	return &AreaInfo{
+	return &Info{
 		Province: gb.gb[code[:2]+"0000"],
 		City:     gb.gb[code[:4]+"00"],
 		County:   gb.gb[code],
 	}
 }
 
-//Search
-func (gb *gb2260) Search(code string) *AreaInfo {
+//Search 搜索匹配项
+func (gb *gb2260) Search(code string) *Info {
 	revisions := new(Selector).Revisions()
 
 	for _, revision := range revisions {
@@ -86,20 +91,20 @@ func (gb *gb2260) Search(code string) *AreaInfo {
 	return nil
 }
 
-//TODO AllProvinces
-func (gb *gb2260) AllProvinces() []AreaInfo {
+//AllProvinces TODO
+func (gb *gb2260) AllProvinces() []Info {
 
 	return nil
 }
 
-//TODO AllCities
-func (gb *gb2260) AllCities() []AreaInfo {
+//AllCities TODO
+func (gb *gb2260) AllCities() []Info {
 
 	return nil
 }
 
-//TODO AllCounties
-func (gb *gb2260) AllCounties() []AreaInfo {
+//AllCounties TODO
+func (gb *gb2260) AllCounties() []Info {
 
 	return nil
 }

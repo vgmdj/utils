@@ -2,22 +2,32 @@ package db
 
 import (
 	"fmt"
-	"github.com/vgmdj/utils/chars"
 	"strings"
+
+	"github.com/vgmdj/utils/chars"
 )
 
+//OP 操作类型
 type OP string
 
 const (
-	EQ   OP = "="
-	LT   OP = "<"
-	LE   OP = "<="
-	NE   OP = "!="
-	GT   OP = ">"
-	GE   OP = ">="
+	//EQ 等于
+	EQ OP = "="
+	//LT 小于
+	LT OP = "<"
+	//LE 小于等于
+	LE OP = "<="
+	//NE 不等于
+	NE OP = "!="
+	//GT 大于
+	GT OP = ">"
+	//GE 大于等于
+	GE OP = ">="
+	//LIKE like
 	LIKE OP = "like"
 )
 
+//Count 获取个数
 func Count(sql string, param ...string) string {
 	p := "*"
 	if len(param) != 0 {
@@ -33,18 +43,22 @@ func Count(sql string, param ...string) string {
 	return fmt.Sprintf("select count(%s) as count %s", p, sql[start+1:])
 }
 
+//AttachOr 附加or
 func AttachOr(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, "or")
 }
 
+//AttachAnd 附加and
 func AttachAnd(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, "and")
 }
 
+//Attach 附加
 func Attach(sql string, query interface{}, data interface{}, op OP) string {
 	return attach(sql, query, data, op, " ")
 }
 
+//Limit limit
 func Limit(sql string, pageCount, pageIndex interface{}) string {
 	var (
 		count = chars.ToInt(pageCount)
@@ -57,6 +71,7 @@ func Limit(sql string, pageCount, pageIndex interface{}) string {
 
 }
 
+//LimitQuery 页码和显示数，转换成limit
 func LimitQuery(pageCount, pageIndex int) (limit int, offset int) {
 	limit = pageCount
 	offset = limit * (pageIndex - 1)

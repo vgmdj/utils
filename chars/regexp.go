@@ -5,7 +5,8 @@ import (
 )
 
 /************************* 自定义类型 ************************/
-//数字+字母  不限制大小写 6~30位
+
+//IsID 数字+字母  不限制大小写 6~30位
 func IsID(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -17,7 +18,7 @@ func IsID(str ...string) bool {
 	return b
 }
 
-//数字+字母+符号 6~30位
+//IsPwd 数字+字母+符号 6~30位
 func IsPwd(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -29,7 +30,7 @@ func IsPwd(str ...string) bool {
 	return b
 }
 
-//数字+字母  不限制大小写 不限位数
+//IsIntegerOrAlphabet 数字+字母  不限制大小写 不限位数
 func IsIntegerOrAlphabet(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -42,7 +43,8 @@ func IsIntegerOrAlphabet(str ...string) bool {
 }
 
 /************************* 数字类型 ************************/
-//纯整数
+
+//IsInteger 纯整数
 func IsInteger(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -54,7 +56,7 @@ func IsInteger(str ...string) bool {
 	return b
 }
 
-//纯小数
+//IsDecimals 纯小数
 func IsDecimals(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -66,7 +68,7 @@ func IsDecimals(str ...string) bool {
 	return b
 }
 
-//手提电话（不带前缀）最高11位
+//IsCellphone 手提电话（不带前缀）最高11位
 func IsCellphone(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -78,7 +80,7 @@ func IsCellphone(str ...string) bool {
 	return b
 }
 
-//家用电话（不带前缀） 最高8位
+//IsTelephone 家用电话（不带前缀） 最高8位
 func IsTelephone(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -91,7 +93,8 @@ func IsTelephone(str ...string) bool {
 }
 
 /************************* 英文类型 *************************/
-//仅小写
+
+//IsEngishLowCase 仅小写
 func IsEngishLowCase(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -103,7 +106,7 @@ func IsEngishLowCase(str ...string) bool {
 	return b
 }
 
-//仅大写
+//IsEnglishCap 仅大写
 func IsEnglishCap(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -115,7 +118,7 @@ func IsEnglishCap(str ...string) bool {
 	return b
 }
 
-//大小写混合
+//IsEnglish 大小写混合
 func IsEnglish(str ...string) bool {
 	var b bool
 	for _, s := range str {
@@ -127,7 +130,7 @@ func IsEnglish(str ...string) bool {
 	return b
 }
 
-//邮箱 最高30位
+//IsEmail 邮箱 最高30位
 func IsEmail(str ...string) bool {
 	var b bool
 	for _, s := range str {

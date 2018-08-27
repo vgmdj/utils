@@ -1,19 +1,22 @@
 package config
 
 import (
-	"github.com/go-ini/ini"
-	"github.com/vgmdj/utils/logger"
 	"log"
 	"os"
+
+	"github.com/go-ini/ini"
+	"github.com/vgmdj/utils/logger"
 )
 
 type (
+	//Conf 配置文件
 	Conf struct {
 		FileName string
 		Ctl      *ini.File
 	}
 )
 
+//Instance 初始化
 func (c *Conf) Instance() {
 	f, err := os.Open(c.FileName)
 	if err != nil {
@@ -27,6 +30,7 @@ func (c *Conf) Instance() {
 
 }
 
+//GetSection 获取内容
 func (c *Conf) GetSection(sec string) *ini.Section {
 	c.checkInstance()
 

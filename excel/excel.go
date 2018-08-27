@@ -6,6 +6,7 @@ import (
 )
 
 type (
+	//Excel excel
 	Excel struct {
 		FileName  string
 		TitleKey  []string

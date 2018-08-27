@@ -2,6 +2,7 @@ package chars
 
 import "github.com/axgle/mahonia"
 
+//ConvertGbkToUtf8 gbk转utf8
 func ConvertGbkToUtf8(src string) string {
 	return convertToString(src, "gbk", "utf8")
 }

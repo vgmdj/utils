@@ -2,18 +2,23 @@ package area
 
 import "fmt"
 
+//CodeType 代码类型
 type CodeType int
 
 const (
+	//GB2260 区域代码
 	GB2260 CodeType = iota
+	//POST 邮编
 	POST
 )
 
+//Area 地址
 type Area interface {
 	SetRevision(revision string)
-	Get(code string) *AreaInfo
+	Get(code string) *Info
 }
 
+//NewArea 初始化
 func NewArea(codeType CodeType) Area {
 	switch codeType {
 	default:
@@ -29,20 +34,27 @@ func NewArea(codeType CodeType) Area {
 	}
 }
 
-type AreaInfo struct {
+//Info 地区信息
+type Info struct {
 	Province string
 	City     string
 	County   string
 }
 
-func (ai *AreaInfo) FullName() string {
+//FullName 全称
+func (ai *Info) FullName() string {
 	return fmt.Sprintf("%s%s%s", ai.Province, ai.City, ai.County)
 }
 
-func (ai *AreaInfo) GetGB2260() string {
+//GetGB2260 反推区域代码
+//TODO
+func (ai *Info) GetGB2260() string {
 	return ai.Province
 }
 
-func (ai *AreaInfo) GetPostCode() string {
+//
+//GetPostCode 反推邮编
+//TODO
+func (ai *Info) GetPostCode() string {
 	return ai.Province
 }

@@ -2,12 +2,13 @@ package excel
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/Luxurioust/excelize"
 	"github.com/vgmdj/utils/logger"
-	"strconv"
 )
 
-//CreateFile
+//CreateFile 创建excel
 func (excel *Excel) CreateFile() (err error) {
 	if err = excel.checkExcel(); err != nil {
 		logger.Error(err)

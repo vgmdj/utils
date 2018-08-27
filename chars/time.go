@@ -36,7 +36,8 @@ func TimeID() string {
 	return time.Now().Format("20060102") + RandomNumeric(8)
 }
 
-type restTime struct {
+//RT 休息，非营业时间
+type RT struct {
 	restTimeFrom  time.Duration
 	restTimeTo    time.Duration
 	crossMidNight bool
@@ -44,28 +45,32 @@ type restTime struct {
 	extraWaitTime time.Duration
 }
 
-func RestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) *restTime {
-	rt := restTime{}
+//RestTime 初始化
+func RestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) *RT {
+	rt := RT{}
 	rt.SetRestTime(hFrom, mFrom, hTo, mTo, crossMidNight)
 	return &rt
 }
 
-func (rt *restTime) SetRestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) {
+//SetRestTime 配置
+func (rt *RT) SetRestTime(hFrom, mFrom, hTo, mTo int, crossMidNight bool) {
 	rt.restTimeFrom = time.Duration(hFrom)*time.Hour + time.Duration(mFrom)*time.Minute
 	rt.restTimeTo = time.Duration(hTo)*time.Hour + time.Duration(mTo)*time.Minute + time.Second*60
 	rt.crossMidNight = crossMidNight
 }
 
 //SetExtWaitTime set extra wait time, only for rest time, not working in other time
-func (rt *restTime) SetExtWaitTime(extra time.Duration) {
+func (rt *RT) SetExtWaitTime(extra time.Duration) {
 	rt.extraWaitTime = extra
 }
 
-func (rt *restTime) IsRestTime(t time.Time) bool {
+//IsRestTime 判断是否是非营业时间
+func (rt *RT) IsRestTime(t time.Time) bool {
 	return !rt.IsWorkingTime(t)
 }
 
-func (rt *restTime) IsWorkingTime(t time.Time) bool {
+//IsWorkingTime 判断是否是工作时间
+func (rt *RT) IsWorkingTime(t time.Time) bool {
 	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute +
 		time.Duration(t.Second())*time.Second
 
@@ -81,7 +86,8 @@ func (rt *restTime) IsWorkingTime(t time.Time) bool {
 
 }
 
-func (rt *restTime) WaitTime(t time.Time) time.Duration {
+//WaitTime 当前等待开业所需时间
+func (rt *RT) WaitTime(t time.Time) time.Duration {
 	now := time.Duration(t.Hour())*time.Hour + time.Duration(t.Minute())*time.Minute +
 		time.Duration(t.Second())*time.Second
 

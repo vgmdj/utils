@@ -2,16 +2,21 @@ package chars
 
 import (
 	"fmt"
+	"time"
+
+	//数据使用库
 	_ "github.com/vgmdj/gb2260/gbdata"
 	"github.com/vgmdj/utils/area"
 	"github.com/vgmdj/utils/logger"
-	"time"
 )
 
+//Sex 性别
 type Sex int
 
 const (
-	Male   Sex = 1
+	//Male 男
+	Male Sex = 1
+	//Female 女
 	Female Sex = 2
 )
 
@@ -23,6 +28,7 @@ func (s Sex) String() string {
 	return "female"
 }
 
+//CNString 中文输出
 func (s Sex) CNString() string {
 	if s == Male {
 		return "男"
@@ -34,17 +40,19 @@ func (s Sex) CNString() string {
 var idCardAlpha = []int{7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 0}
 var idCardCheckSum = []byte{'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'}
 
-type idCard struct {
+//IDCard 身份证
+type IDCard struct {
 	CardNum string
 	idNum   [18]byte
 }
 
-func ParseIdCard(idcard string) (*idCard, error) {
+//ParseIDCard 身份证号解析
+func ParseIDCard(idcard string) (*IDCard, error) {
 	if len(idcard) == 15 {
-		return ConvertOldIdCard(idcard), nil
+		return ConvertOldIDCard(idcard), nil
 	}
 
-	res := new(idCard)
+	res := new(IDCard)
 	copy(res.idNum[:], idcard)
 	if len(idcard) != 18 || res.idNum[17] != checkSum(res.idNum) {
 		return res, fmt.Errorf("invalid id code")
@@ -55,7 +63,8 @@ func ParseIdCard(idcard string) (*idCard, error) {
 
 }
 
-func (i *idCard) GetAge() int {
+//GetAge 年龄计算
+func (i *IDCard) GetAge() int {
 	bri := i.GetBirthday()
 	now := time.Now()
 	age := now.Year() - bri.Year()
@@ -68,7 +77,8 @@ func (i *idCard) GetAge() int {
 	return age - 1
 }
 
-func (i *idCard) GetSex() Sex {
+//GetSex 性别
+func (i *IDCard) GetSex() Sex {
 	sex := ToInt(i.idNum[16:17])
 	if sex%2 == 0 {
 		return Female
@@ -77,7 +87,8 @@ func (i *idCard) GetSex() Sex {
 	return Male
 }
 
-func (i *idCard) GetBirthday() time.Time {
+//GetBirthday 生日
+func (i *IDCard) GetBirthday() time.Time {
 	year := ToInt(i.idNum[6:10])
 	month := ToInt(i.idNum[10:12])
 	day := ToInt(i.idNum[12:14])
@@ -88,18 +99,21 @@ func (i *idCard) GetBirthday() time.Time {
 	return bri
 }
 
-func (i *idCard) GetLastFour() string {
+//GetLastFour 后四位识别码
+func (i *IDCard) GetLastFour() string {
 	return i.CardNum[18-4:]
 }
 
-func (i *idCard) GetPlaceOfBirth() *area.AreaInfo {
+//GetPlaceOfBirth 出生地
+func (i *IDCard) GetPlaceOfBirth() *area.Info {
 	gb2260 := area.NewArea(area.GB2260)
 	gb2260.SetRevision(i.CardNum[6:10])
 	return gb2260.Get(i.CardNum[:6])
 }
 
-func ConvertOldIdCard(idcard string) *idCard {
-	res := new(idCard)
+//ConvertOldIDCard 旧15位转成18位
+func ConvertOldIDCard(idcard string) *IDCard {
+	res := new(IDCard)
 	copy(res.idNum[0:6], idcard[0:6])
 	copy(res.idNum[8:17], idcard[6:15])
 	if res.idNum[8] >= 2 {
@@ -110,8 +124,8 @@ func ConvertOldIdCard(idcard string) *idCard {
 	return res
 }
 
-//CheckIdCode 判断身份证号是否合法，返回true合法，返回false不合法
-func CheckIdCode(idcode string) bool {
+//CheckIDCode 判断身份证号是否合法，返回true合法，返回false不合法
+func CheckIDCode(idcode string) bool {
 	length := len(idcode)
 	if length != 15 && length != 18 {
 		return false
@@ -126,7 +140,8 @@ func CheckIdCode(idcode string) bool {
 	return false
 }
 
-func GetIdCodeCheckSum(idcode string) byte {
+//GetIDCodeCheckSum 计算最后一位校验位
+func GetIDCodeCheckSum(idcode string) byte {
 	if len(idcode) != 18 && len(idcode) != 17 {
 		logger.Error("invalid length of idcode")
 		return ' '

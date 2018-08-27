@@ -1,28 +1,29 @@
 package chars_test
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/vgmdj/utils/chars"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/vgmdj/utils/chars"
 )
 
 func TestIdCodeHelper(t *testing.T) {
 	ast := assert.New(t)
 
-	idCode, err := chars.ParseIdCard("320321199007111234")
+	idCode, err := chars.ParseIDCard("320321199007111234")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
 	}
 
-	idCode2, err := chars.ParseIdCard("420621199005243903")
+	idCode2, err := chars.ParseIDCard("420621199005243903")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
 	}
 
-	idCode3, err := chars.ParseIdCard("320321201705241239")
+	idCode3, err := chars.ParseIDCard("320321201705241239")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -51,6 +52,6 @@ func TestIdCodeHelper(t *testing.T) {
 
 	ast.Equal(idCode2.GetPlaceOfBirth().FullName(), "湖北省襄樊市襄阳县")
 
-	ast.Equal(string(chars.GetIdCodeCheckSum("320321199308227214")), "4")
-	ast.Equal(string(chars.GetIdCodeCheckSum("32032119930822721")), "4")
+	ast.Equal(string(chars.GetIDCodeCheckSum("320321199308227214")), "4")
+	ast.Equal(string(chars.GetIDCodeCheckSum("32032119930822721")), "4")
 }
