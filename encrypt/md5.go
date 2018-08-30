@@ -4,8 +4,9 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/crypto/scrypt"
 	"io"
+
+	"golang.org/x/crypto/scrypt"
 )
 
 //SaltPwd 加盐加密
