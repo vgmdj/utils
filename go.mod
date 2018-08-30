@@ -13,5 +13,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.2
 	github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
+	golang.org/x/crypto v0.0.0-20180820150726-614d502a4dac
 	gopkg.in/chanxuehong/wechat.v2 v2.0.0-20180803114548-d901fc2b67e4
 )

@@ -2,6 +2,7 @@ package encrypt
 
 import (
 	"crypto/des"
+
 	"github.com/vgmdj/utils/logger"
 )
 
@@ -14,7 +15,7 @@ func DesEncrypt(plaintext, key string) (cipherText []byte, err error) {
 
 	blockSize := block.BlockSize()
 
-	origData := pkcs5Padding([]byte(plaintext), blockSize)
+	origData := PKCS5Padding([]byte(plaintext), blockSize)
 
 	cipherText = make([]byte, len(origData))
 
@@ -32,7 +33,7 @@ func DesTripleEncrypt(plaintext, key string) (cipherText []byte, err error) {
 
 	blockSize := block.BlockSize()
 
-	origData := pkcs5Padding([]byte(plaintext), blockSize)
+	origData := PKCS5Padding([]byte(plaintext), blockSize)
 
 	cipherText = make([]byte, len(origData))
 
