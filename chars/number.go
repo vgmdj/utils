@@ -43,6 +43,9 @@ func ToInt(num interface{}) int {
 		}
 		return result
 
+	case nil:
+		return 0
+
 	}
 }
 
@@ -68,6 +71,10 @@ func ToFloat64(num interface{}) float64 {
 
 	case int64:
 		return float64(num.(int64))
+
+	case nil:
+		return 0
+
 	}
 }
 
@@ -97,6 +104,9 @@ func ToString(num interface{}, prec ...int) string {
 
 	case float64:
 		return strconv.FormatFloat(num.(float64), 'f', p, 64)
+
+	case nil:
+		return ""
 
 	}
 }
