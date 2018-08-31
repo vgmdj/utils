@@ -53,8 +53,8 @@ func AesCBCEncrypt(plaintext, key, iv string) (code []byte, err error) {
 	return
 }
 
-//AesCBCEncrypt aes cbc 128 pkcs7padding mode
-func AesEBCEncrypt(plaintext, key string) (code []byte, err error) {
+//AesECBEncrypt aes cbc 128 pkcs7padding mode
+func AesECBEncrypt(plaintext, key string) (code []byte, err error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return nil, err
@@ -64,39 +64,29 @@ func AesEBCEncrypt(plaintext, key string) (code []byte, err error) {
 
 	origData := PKCS5Padding([]byte(plaintext), blockSize)
 
-	//存储每次加密的数据
-	code = make([]byte, len(origData))
-	tmpData := make([]byte, blockSize)
+	blockMode := NewECBEncrypter(block)
 
-	//分组分块加密
-	for index := 0; index < len(origData); index += blockSize {
-		block.Encrypt(tmpData, origData[index:index+blockSize])
-		copy(code, tmpData)
-	}
+	code = make([]byte, len(origData))
+
+	blockMode.CryptBlocks(code, origData)
 
 	return
 }
 
-//AesCBCEncrypt aes cbc 128 pkcs7padding mode
-func AesEBCDecrypt(cipherText, key string) (code []byte, err error) {
+//AesECBDecrypt aes cbc 128 pkcs7padding mode
+func AesECBDecrypt(cipherText, key string) (code []byte, err error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return nil, err
 	}
 
-	blockSize := block.BlockSize()
-	origData := []byte(cipherText)
+	blockMode := NewECBDecrypter(block)
 
-	//存储每次加密的数据
-	tmpData := make([]byte, blockSize)
+	code = make([]byte, len(cipherText))
 
-	//分组分块解密
-	for index := 0; index < len(origData); index += blockSize {
-		block.Decrypt(tmpData, origData[index:index+blockSize])
-		copy(origData, tmpData)
-	}
+	blockMode.CryptBlocks(code, []byte(cipherText))
 
-	return PKCS5UnPadding(origData), nil
+	return PKCS5UnPadding(code), nil
 }
 
 func aesEncrypt(ext, key string) (code []byte, err error) {
@@ -116,4 +106,60 @@ func aesEncrypt(ext, key string) (code []byte, err error) {
 	blockMode.CryptBlocks(code, origData)
 
 	return
+}
+
+type ecb struct {
+	b         cipher.Block
+	blockSize int
+}
+
+func newECB(b cipher.Block) *ecb {
+	return &ecb{
+		b:         b,
+		blockSize: b.BlockSize(),
+	}
+}
+
+type ecbEncrypter ecb
+
+func NewECBEncrypter(b cipher.Block) cipher.BlockMode {
+	return (*ecbEncrypter)(newECB(b))
+}
+
+func (x *ecbEncrypter) BlockSize() int { return x.blockSize }
+
+func (x *ecbEncrypter) CryptBlocks(dst, src []byte) {
+	if len(src)%x.blockSize != 0 {
+		panic("crypto/cipher: input not full blocks")
+	}
+	if len(dst) < len(src) {
+		panic("crypto/cipher: output smaller than input")
+	}
+	for len(src) > 0 {
+		x.b.Encrypt(dst, src[:x.blockSize])
+		src = src[x.blockSize:]
+		dst = dst[x.blockSize:]
+	}
+}
+
+type ecbDecrypter ecb
+
+func NewECBDecrypter(b cipher.Block) cipher.BlockMode {
+	return (*ecbDecrypter)(newECB(b))
+}
+
+func (x *ecbDecrypter) BlockSize() int { return x.blockSize }
+
+func (x *ecbDecrypter) CryptBlocks(dst, src []byte) {
+	if len(src)%x.blockSize != 0 {
+		panic("crypto/cipher: input not full blocks")
+	}
+	if len(dst) < len(src) {
+		panic("crypto/cipher: output smaller than input")
+	}
+	for len(src) > 0 {
+		x.b.Decrypt(dst, src[:x.blockSize])
+		src = src[x.blockSize:]
+		dst = dst[x.blockSize:]
+	}
 }
