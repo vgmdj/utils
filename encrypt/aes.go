@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
@@ -65,8 +63,6 @@ func AesEBCEncrypt(plaintext, key string) (code []byte, err error) {
 	blockSize := block.BlockSize()
 
 	origData := PKCS5Padding([]byte(plaintext), blockSize)
-
-	logger.Info(origData, blockSize)
 
 	//存储每次加密的数据
 	code = make([]byte, len(origData))
