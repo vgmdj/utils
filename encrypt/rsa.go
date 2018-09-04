@@ -14,12 +14,17 @@ import (
 func RsaSign(plainText, privateKey []byte) ([]byte, error) {
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
-		return nil, errors.New("private key error!")
+		return nil, errors.New("private key error")
 	}
 
-	p, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	pInterface, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
 		return nil, err
+	}
+
+	p, ok := pInterface.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.New("should be rsa key, not dsa or ecdsa key ")
 	}
 
 	h := sha1.New()
@@ -47,7 +52,7 @@ func RsaCheckSign(plainText, cipherText, publicKey []byte) error {
 
 	hash := sha1.New()
 	hash.Write(cipherText)
-	return rsa.VerifyPKCS1v15(pub, crypto.SHA1, hash.Sum(nil), plainText)
+	return rsa.VerifyPKCS1v15(pub, crypto.SHA256, hash.Sum(nil), plainText)
 
 }
 
@@ -77,9 +82,14 @@ func RsaDecrypt(cipherText, privateKey []byte) ([]byte, error) {
 		return nil, errors.New("private key error!")
 	}
 
-	p, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	pInterface, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
 		return nil, err
+	}
+
+	p, ok := pInterface.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.New("should be rsa key, not dsa or ecdsa key ")
 	}
 
 	return rsa.DecryptPKCS1v15(rand.Reader, p, cipherText)
