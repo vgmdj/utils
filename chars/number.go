@@ -120,8 +120,8 @@ func TakeLeftInt(num int, n int) int {
 	return num
 }
 
-//TekeRightInt TODO finish this function
-func TekeRightInt(num int, n int) int {
+//TakeRightInt TODO finish this function
+func TakeRightInt(num int, n int) int {
 
 	return 0
 }

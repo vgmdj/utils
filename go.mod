@@ -11,10 +11,12 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-ini/ini v1.38.2
 	github.com/gogo/protobuf v1.1.1
+	github.com/google/uuid v1.0.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20180825215210-0210a2f0f73c // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
+	github.com/pborman/uuid v0.0.0-20180909234540-25cd46ecac86
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180820201707-7c9eb446e3cf // indirect
 	github.com/smartystreets/goconvey v0.0.0-20180222194500-ef6db91d284a // indirect

@@ -1,9 +1,13 @@
 package chars
 
 import (
+	"gopkg.in/mgo.v2/bson"
 	"math"
 	"math/rand"
+	"strings"
 	"time"
+
+	"github.com/pborman/uuid"
 )
 
 var (
@@ -164,4 +168,19 @@ func RandomNumeric(count uint) string {
 func RandomNumString() string {
 	Count := uint(6)
 	return RandomAlphaOrNumeric(Count, false, true)
+}
+
+//NewUUID .
+//if hyphen is false return the uuid without hyphen
+func NewUUID(hyphen bool) string {
+	if hyphen {
+		return uuid.NewUUID().String()
+	}
+
+	return strings.Replace(uuid.NewUUID().String(), "-", "", -1)
+
+}
+
+func NewBsonID()string{
+	return bson.NewObjectId().Hex()
 }
