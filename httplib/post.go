@@ -4,13 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
-	"github.com/vgmdj/utils/logger"
 	"net/http"
 	"net/url"
-)
 
-const (
-	ResponseResultContentType = "Result-Parse-Content-Type-vgmdj"
+	"github.com/vgmdj/utils/logger"
 )
 
 //PostJSON http method post, content type application/json

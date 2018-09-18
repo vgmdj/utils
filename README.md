@@ -1,6 +1,6 @@
 # web tools
 
-## chars
+## [chars](https://github.com/vgmdj/utils/tree/master/chars)
 字符串处理包
 - 身份证号解析
 - 常用正则判断
@@ -10,7 +10,7 @@
 - 随机数生成
 - 时间与字符转换
 
-## httplib
+## [httplib](https://github.com/vgmdj/utils/tree/master/httplib)
 http 请求与接收，并根据返回Content-Type 将返回结果绑定到相应的结构体上<br>
 支持的Content-type
 - application/json

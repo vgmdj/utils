@@ -4,18 +4,23 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"github.com/vgmdj/utils/logger"
 	"io"
 	"io/ioutil"
 	"strings"
+
+	"github.com/vgmdj/utils/logger"
 )
 
 const (
-	contentTypeAppJson   = "application/json"
-	contentTypeTextPlain = "text/plain"
-	contentTypeAppXml    = "application/xml"
-	contentTypeTextXml   = "text/xml"
-	contentTypeDefault   = "decoder/default"
+	ContentTypeAppJson   = "application/json"
+	ContentTypeTextPlain = "text/plain"
+	ContentTypeAppXml    = "application/xml"
+	ContentTypeTextXml   = "text/xml"
+	ContentTypeDefault   = "decoder/default"
+)
+
+const (
+	ResponseResultContentType = "Result-Parse-Content-Type-vgmdj"
 )
 
 //RespDecoder 用于处理请求的返回数据
@@ -24,11 +29,11 @@ type RespDecoder interface {
 }
 
 var decoders = map[string]RespDecoder{
-	contentTypeAppJson:   new(JsonDecoder),
-	contentTypeTextPlain: new(JsonDecoder),
-	contentTypeAppXml:    new(XmlDecoder),
-	contentTypeTextXml:   new(XmlDecoder),
-	contentTypeDefault:   new(DefaultDecoder),
+	ContentTypeAppJson:   new(JsonDecoder),
+	ContentTypeTextPlain: new(JsonDecoder),
+	ContentTypeAppXml:    new(XmlDecoder),
+	ContentTypeTextXml:   new(XmlDecoder),
+	ContentTypeDefault:   new(DefaultDecoder),
 }
 
 //JsonDecoder json处理类
@@ -47,13 +52,26 @@ func (xd XmlDecoder) Unmarshal(body []byte, v interface{}) error {
 	return xml.Unmarshal(body, v)
 }
 
+//TextDecoder text处理类
+type TextDecoder struct{}
+
+//Unmarshal text解析处理
+func (td TextDecoder) Unmarshal(body []byte, v interface{}) error {
+	p, ok := v.(*string)
+	if !ok {
+		return fmt.Errorf("input not a  string pointer")
+	}
+
+	*p = string(body)
+	return nil
+}
+
 //DefaultDecoder 默认方式
 type DefaultDecoder struct{}
 
 //Unmarshal 默认解析处理方式
 func (dd DefaultDecoder) Unmarshal(body []byte, v interface{}) error {
-	v = string(body)
-	return nil
+	return TextDecoder{}.Unmarshal(body, v)
 }
 
 //respParser 对返回的body的处理
