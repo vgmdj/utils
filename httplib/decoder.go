@@ -30,7 +30,7 @@ type RespDecoder interface {
 
 var decoders = map[string]RespDecoder{
 	ContentTypeAppJson:   new(JsonDecoder),
-	ContentTypeTextPlain: new(JsonDecoder),
+	ContentTypeTextPlain: new(TextDecoder),
 	ContentTypeAppXml:    new(XmlDecoder),
 	ContentTypeTextXml:   new(XmlDecoder),
 	ContentTypeDefault:   new(DefaultDecoder),
