@@ -1,5 +1,5 @@
 # chars
-常用字符处理包
+常用字符处理包，详细例子可以参见相应 _test.go 文件
 
 ## 格式转换
 - ToString(num interface{}, ...prec)
@@ -21,6 +21,34 @@
     chars.NewConversion(2342,100).ZoomIn().ToString(10)   //23.4
 
   ```
+
+## 数组处理
+- 判断元素是否存在
+  传入任意类型数组，任意类型元素，若数组中包含相同类型，相同值的元素，则返回true，否则返回false
+
+  ```
+    ast := assert.New(t)
+
+  	var array1 []interface{}
+  	array1 = append(array1,"a")
+  	array1 = append(array1,1)
+
+  	t1 := "a"
+  	ast.Equal(true,IsContain(array1,t1))
+
+  	t2 := 1.23
+  	ast.Equal(false,IsContain(array1,t2))
+
+
+  	array2 := []string{"1","2","a","b"}
+  	t3 := 1
+  	ast.Equal(false,IsContain(array2,t3))
+
+  	t4 := "1"
+  	ast.Equal(true,IsContain(array2,t4))
+
+  ```
+
 
 ## ID生成
 可以使用uuid生成方式，同时指定是否保留"-"，也可以使用bson objectid的生成方式
