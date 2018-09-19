@@ -27,6 +27,7 @@ func TestToInt(t *testing.T) {
 	ast.Equal(ToInt("32"), 32)
 	ast.Equal(ToInt(32), 32)
 	ast.Equal(ToInt(32.11), 32)
+	ast.Equal(ToInt(32.55), 32)
 
 }
 
@@ -39,4 +40,5 @@ func TestToString(t *testing.T) {
 	ast.Equal(ToString(32.00), "32.0000")
 	ast.Equal(ToString(32.10, 2), "32.10")
 	ast.Equal(ToString(32.001, 4), "32.0010")
+	ast.Equal(ToString(1.55, 1), "1.6")
 }
