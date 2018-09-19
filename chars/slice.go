@@ -1,6 +1,10 @@
 package chars
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/vgmdj/utils/logger"
+)
 
 //IsDuplicates 数组内重复元素判断
 func IsDuplicates(a []string) bool {
@@ -32,16 +36,56 @@ func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
 }
 
 //IsContain 是否包含元素
-func IsContain(array []interface{}, value interface{}) bool {
-	if len(array) == 0 {
+func IsContain(array interface{}, value interface{}) bool {
+	switch array.(type) {
+	default:
+		logger.Error("not support value type")
 		return false
-	}
 
-	for _, v := range array {
-		if value == v {
-			return true
+	case []string:
+		for _, v := range array.([]string) {
+			if v == value {
+				return true
+			}
 		}
+
+	case []int:
+		for _, v := range array.([]int) {
+			if v == value {
+				return true
+			}
+		}
+
+	case []int64:
+		for _, v := range array.([]int64) {
+			if v == value {
+				return true
+			}
+		}
+
+	case []float64:
+		for _, v := range array.([]float64) {
+			if v == value {
+				return true
+			}
+		}
+
+	case []byte:
+		for _, v := range array.([]byte) {
+			if v == value {
+				return true
+			}
+		}
+
+	case []interface{}:
+		for _, v := range array.([]interface{}) {
+			if v == value {
+				return true
+			}
+		}
+
 	}
 
 	return false
+
 }
