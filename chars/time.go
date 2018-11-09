@@ -4,7 +4,12 @@ import (
 	"time"
 )
 
-//数据库中时间一般以时间戳或无其他符号纯数字形式存在
+//数据库中时间一般以时间戳或时间格式的形式存在
+
+//AddTime 用法备忘
+func AddTime(t time.Time, year, month, day int) time.Time {
+	return t.AddDate(year, month, day)
+}
 
 //TimeNumPRC 中国纯数字时间
 func TimeNumPRC(t time.Time) string {

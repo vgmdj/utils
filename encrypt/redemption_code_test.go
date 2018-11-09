@@ -1,6 +1,7 @@
 package encrypt
 
 import (
+	"github.com/vgmdj/utils/chars"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,10 +12,13 @@ func TestRedemptionCode_Produce(t *testing.T) {
 
 	codeClt := NewClient("vgmdj@github.com", 8)
 
-	codes, err := codeClt.Produce(1000000)
+	codes, err := codeClt.Produce(2)
 	if err != nil {
 		t.Error(err.Error())
+		return
 	}
+
+	t.Log(codes)
 
 	checkStr := []string{}
 	for _, v := range codes {
@@ -22,5 +26,6 @@ func TestRedemptionCode_Produce(t *testing.T) {
 	}
 
 	ast.Equal(codeClt.CheckCode(checkStr[:]...), nil)
+	ast.Equal(false,chars.IsDuplicates(checkStr))
 
 }
