@@ -91,3 +91,31 @@ func TestWeChat1(t *testing.T) {
 	}
 
 }
+
+/*
+购买成功通知
+{{first.DATA}} 商品名称：{{product.DATA}} 商品价格：{{price.DATA}} 购买时间：{{time.DATA}} {{remark.DATA}}
+*/
+func TestWeChat2(t *testing.T) {
+	params := make(map[string]interface{})
+	params["appid"] = "wx6ddf008341937de1"
+	params["secret"] = "3aefe696e17fa29ca0e1ad14c8ec36ee"
+
+	wxsms := SMSFactory{SMS_WECHAT}.NewSMSClient(params)
+	template := Template{
+		TemplateId: "RoFyLz_xtqtx4r6xNS1LZuPzPTdKEmIy9Oh0v2xAdTM",
+		Keys:       []string{"first", "product", "price", "time", "remark"},
+		Color: map[string]string{
+			"first":  "#191970",
+			"remark": "#191970",
+		},
+	}
+
+	err := wxsms.SendMsgWithTemplate(template, "omHgCwm_DFWghRVayaJ35AggBLG8",
+		"订单20181314151617创建成功", "加油卡充值", "1000元", "2014-09-22 08:10", "请等待充值结果。")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+}
