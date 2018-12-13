@@ -28,6 +28,8 @@ func TestToInt(t *testing.T) {
 	ast.Equal(ToInt(32), 32)
 	ast.Equal(ToInt(32.11), 32)
 	ast.Equal(ToInt(32.55), 32)
+	ast.Equal(ToInt(1.5), 1)
+	ast.Equal(ToInt(1.9), 1)
 
 }
 

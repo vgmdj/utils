@@ -3,6 +3,7 @@ package chars
 import (
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/vgmdj/utils/logger"
 )
@@ -15,7 +16,13 @@ func ToInt(num interface{}) int {
 		return 0
 
 	case string:
-		result, _ := strconv.Atoi(num.(string))
+		str := num.(string)
+		index := strings.Index(str, ".")
+		if index != -1 {
+			str = str[:index]
+		}
+
+		result, _ := strconv.Atoi(str)
 		return result
 
 	case int:
@@ -28,7 +35,7 @@ func ToInt(num interface{}) int {
 		return int(num.(int64))
 
 	case float64:
-		//return int(math.Floor(num.(float64) + 0.5))
+		//return int(math.Floor(num.(float64) + 0.1))
 		return int(num.(float64))
 
 	case bool:
@@ -92,7 +99,31 @@ func ToString(num interface{}, prec ...int) string {
 		return ""
 
 	case string:
-		return num.(string)
+		str := num.(string)
+		if len(prec) == 0 {
+			return str
+		}
+
+		str = strings.Trim(str, "0")
+		index := strings.Index(str, ".")
+		if index == -1 {
+			index = len(num.(string))
+			str += "."
+		}
+
+		str += addZero(p)
+
+		if p == 0 && str[len(str)-1] == '.' {
+			return str[:len(str)-1]
+		}
+
+		str = str[:index+p+1]
+
+		if str[0] == '.' {
+			return "0" + str
+		}
+
+		return str
 
 	case int:
 		return strconv.Itoa(num.(int))
@@ -110,6 +141,15 @@ func ToString(num interface{}, prec ...int) string {
 		return ""
 
 	}
+}
+
+func addZero(n int) string {
+	result := ""
+	for i := 0; i < n; i++ {
+		result += "0"
+	}
+
+	return result
 }
 
 //TakeLeftInt 取数字左n位

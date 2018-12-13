@@ -1,6 +1,8 @@
 package chars
 
 import (
+	"fmt"
+	"strings"
 	"sync"
 )
 
@@ -12,11 +14,19 @@ const (
 var (
 	single *Conversion
 	once   sync.Once
+
+	zero = "0"
 )
+
+func init() {
+	for i := 0; i < 100; i++ {
+		zero = fmt.Sprintf("%s%s", zero, "0")
+	}
+}
 
 //Conversion 放大缩小转换
 type Conversion struct {
-	base      float64
+	base      string
 	result    Result
 	multiples int
 }
@@ -25,9 +35,9 @@ type Conversion struct {
 func NewConversion(params ...interface{}) *Conversion {
 	c := new(Conversion)
 
-	c.base = 0
+	c.base = "0"
 	if len(params) != 0 {
-		c.base = ToFloat64(params[0])
+		c.base = zero + ToString(params[0]) + zero
 	}
 
 	c.multiples = parseMultiples(params[:]...)
@@ -48,28 +58,65 @@ func (c *Conversion) SetMultiples(multiples int) {
 	c.multiples = multiples
 }
 
-//BaseValue 设置基数
-func (c Conversion) BaseValue() float64 {
-	return c.base
+//BaseValue 返回基数
+func (c Conversion) BaseValue() string {
+	return ToString(c.base, 0)
 }
 
 //ZoomOut 放大
 func (c Conversion) ZoomOut(base ...interface{}) Result {
 	if len(base) != 0 {
-		c.base = ToFloat64(base[0])
+		c.base = zero + ToString(base[0]) + zero
 	}
 
-	c.result = Result(c.base * float64(c.multiples))
+	runes := []rune(c.base)
+
+	move := 0
+	for i := len(zero); i < len(runes)-len(zero)+2 && move < precision(c.multiples); i++ {
+		if runes[i] == '.' {
+			runes[i+1], runes[i] = runes[i], runes[i+1]
+			move++
+		}
+	}
+
+	if move == 0 {
+		runes[len(c.base)-len(zero)+precision(c.multiples)] = '.'
+	}
+
+	c.result = Result(strings.Trim(string(runes), "0"))
+
 	return c.result
 }
 
 //ZoomIn 缩小
 func (c Conversion) ZoomIn(base ...interface{}) Result {
 	if len(base) != 0 {
-		c.base = ToFloat64(base[0])
+		c.base = zero + ToString(base[0]) + zero
 	}
 
-	c.result = Result(c.base / float64(c.multiples))
+	runes := []rune(c.base)
+
+	move := 0
+	for i := len(runes) - len(zero) - 1; i > len(zero)-2 && move < precision(c.multiples); i-- {
+		if runes[i] == '.' {
+			runes[i-1], runes[i] = runes[i], runes[i-1]
+			move++
+		}
+	}
+
+	if move != 0 {
+		c.result = Result(strings.Trim(string(runes), "0"))
+		return c.result
+	}
+
+	runes[len(runes)-len(zero)] = '.'
+
+	for i := len(runes) - len(zero); move < precision(c.multiples); i, move = i-1, move+1 {
+		runes[i-1], runes[i] = runes[i], runes[i-1]
+	}
+
+	c.result = Result(strings.Trim(string(runes), "0"))
+
 	return c.result
 }
 
@@ -98,24 +145,19 @@ func precision(multiples int) int {
 }
 
 //Result 转换结果
-type Result float64
+type Result string
 
 //ToString 字符显示
-func (r Result) ToString(multiples ...int) string {
-	var m = DefaultMultiples
-	if len(multiples) != 0 {
-		m = multiples[0]
-	}
-
-	return ToString(float64(r), precision(m))
+func (r Result) ToString(prec ...int) string {
+	return ToString(string(r), prec[:]...)
 }
 
 //ToInt 整数显示
 func (r Result) ToInt() int {
-	return ToInt(float64(r))
+	return ToInt(string(r))
 }
 
 //ToFloat64 浮点数显示
 func (r Result) ToFloat64() float64 {
-	return ToFloat64(float64(r))
+	return ToFloat64(string(r))
 }
