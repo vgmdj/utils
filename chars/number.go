@@ -107,20 +107,20 @@ func ToString(num interface{}, prec ...int) string {
 		str = strings.Trim(str, "0")
 		index := strings.Index(str, ".")
 		if index == -1 {
-			index = len(num.(string))
 			str += "."
+			index = len(str) - 1
 		}
 
 		str += addZero(p)
 
-		if p == 0 && str[len(str)-1] == '.' {
-			return str[:len(str)-1]
-		}
-
-		str = str[:index+p]
+		str = str[:index+p+1]
 
 		if str == "" || str[0] == '.' {
-			return "0" + str
+			str = "0" + str
+		}
+
+		if str[len(str)-1] == '.' {
+			str = str[:len(str)-1]
 		}
 
 		return str
