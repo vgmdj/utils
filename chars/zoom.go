@@ -149,6 +149,10 @@ type Result string
 
 //ToString 字符显示
 func (r Result) ToString(prec ...int) string {
+	if len(prec) == 0 {
+		return ToString(string(r), 2)
+	}
+
 	return ToString(string(r), prec[:]...)
 }
 

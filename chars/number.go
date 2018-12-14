@@ -88,7 +88,7 @@ func ToFloat64(num interface{}) float64 {
 
 //ToString 转换成string
 func ToString(num interface{}, prec ...int) string {
-	var p = 4
+	var p = 2
 	if len(prec) != 0 {
 		p = prec[0]
 	}
@@ -117,9 +117,9 @@ func ToString(num interface{}, prec ...int) string {
 			return str[:len(str)-1]
 		}
 
-		str = str[:index+p+1]
+		str = str[:index+p]
 
-		if str[0] == '.' {
+		if str == "" || str[0] == '.' {
 			return "0" + str
 		}
 
