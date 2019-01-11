@@ -57,6 +57,55 @@ func ToInt(num interface{}) int {
 	}
 }
 
+//ToInt64 转换成int64格式
+func ToInt64(num interface{}) int64 {
+	switch num.(type) {
+	default:
+		logger.Error("invalid type ", num)
+		return 0
+
+	case string:
+		str := num.(string)
+		index := strings.Index(str, ".")
+		if index != -1 {
+			str = str[:index]
+		}
+
+		result, _ := strconv.ParseInt(str,0,64)
+		return result
+
+	case int:
+		return int64(num.(int))
+
+	case int32:
+		return int64(num.(int32))
+
+	case int64:
+		return num.(int64)
+
+	case float64:
+		//return int(math.Floor(num.(float64) + 0.1))
+		return int64(num.(float64))
+
+	case bool:
+		if num.(bool) {
+			return 1
+		}
+		return 0
+
+	case []byte:
+		result := int64(0)
+		for k, v := range num.([]byte) {
+			result += (int64(v) - 48) * int64(math.Pow10(len(num.([]byte))-k-1))
+		}
+		return result
+
+	case nil:
+		return 0
+
+	}
+}
+
 //ToFloat64 转换成float64格式
 func ToFloat64(num interface{}) float64 {
 	switch num.(type) {
