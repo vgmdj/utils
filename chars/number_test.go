@@ -9,7 +9,14 @@ import (
 func TestTakeLeftInt(t *testing.T) {
 	ast := assert.New(t)
 
+	ast.Equal(TakeLeftInt(1234567, 1), 1)
+	ast.Equal(TakeLeftInt(1234567, 2), 12)
 	ast.Equal(TakeLeftInt(1234567, 3), 123)
+	ast.Equal(TakeLeftInt(1234567, 4), 1234)
+	ast.Equal(TakeLeftInt(999999, 6), 999999)
+	ast.Equal(TakeLeftInt(100, 2), 10)
+	ast.Equal(TakeLeftInt(100, 3), 100)
+	ast.Equal(TakeLeftInt(100, 4), 100)
 }
 
 func TestToFloat64(t *testing.T) {
