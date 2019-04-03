@@ -76,9 +76,14 @@ func (dd DefaultDecoder) Unmarshal(body []byte, v interface{}) error {
 
 //respParser 对返回的body的处理
 func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err error) {
-	var temp []byte
-	if temp, err = ioutil.ReadAll(body); err != nil {
+	data, err := ioutil.ReadAll(body)
+	if err != nil {
 		logger.Error("resp body read err ")
+		return err
+	}
+
+	if data == nil {
+		logger.Info("no body data")
 		return
 	}
 
@@ -87,13 +92,13 @@ func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err 
 	decoder, ok := decoders[contentType]
 	if !ok {
 		logger.Error("unexpected content type ", contentType)
-		logger.Error("data : ", string(temp))
+		logger.Error("data : ", string(data))
 
-		return fmt.Errorf("Cannot decode request for %s data ", temp)
+		return fmt.Errorf("Cannot decode request for %s data ", data)
 	}
 
-	if err = decoder.Unmarshal(temp, respInfo); err != nil {
-		logger.Error("err info ", string(temp))
+	if err = decoder.Unmarshal(data, respInfo); err != nil {
+		logger.Error("err info ", string(data))
 		return
 	}
 
