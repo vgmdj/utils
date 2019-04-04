@@ -11,7 +11,7 @@ import (
 )
 
 //PostJSON http method post, content type application/json
-func PostJSON(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostJSON(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -26,11 +26,11 @@ func PostJSON(postUrl string, body interface{}, respInfo interface{}, headers ma
 		return
 	}
 
-	return post(postUrl, values, respInfo, headers)
+	return c.post(postUrl, values, respInfo, headers)
 }
 
 //PostXML http method post , content type application/xml
-func PostXML(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostXML(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -45,11 +45,11 @@ func PostXML(postUrl string, body interface{}, respInfo interface{}, headers map
 		return
 	}
 
-	return post(postUrl, values, respInfo, headers)
+	return c.post(postUrl, values, respInfo, headers)
 }
 
 //PostForm http method post , content type x-www-form-urlencoded
-func PostForm(postUrl string, formValues map[string]string, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostForm(postUrl string, formValues map[string]string, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -63,21 +63,25 @@ func PostForm(postUrl string, formValues map[string]string, respInfo interface{}
 		values[k] = []string{v}
 	}
 
-	return post(postUrl, []byte(values.Encode()), respInfo, headers)
+	return c.post(postUrl, []byte(values.Encode()), respInfo, headers)
 }
 
-func PostBytes(postUrl string, bytes []byte, respInfo interface{}, headers map[string]string) (err error) {
+//PostBytes http method post,
+func (c *Client) PostBytes(postUrl string, bytes []byte, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
 
-	return post(postUrl, bytes, respInfo, headers)
+	if _, ok := headers["Content-Type"]; !ok {
+		headers["Content-Type"] = "text/plain;charset=UTF-8"
+	}
+
+	return c.post(postUrl, bytes, respInfo, headers)
 }
 
 //post http post request
-func post(url string, body []byte, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) post(url string, body []byte, respInfo interface{}, headers map[string]string) (err error) {
 	var (
-		client  http.Client
 		request *http.Request
 		resp    *http.Response
 	)
@@ -94,7 +98,7 @@ func post(url string, body []byte, respInfo interface{}, headers map[string]stri
 		request.Header.Set(k, v)
 	}
 
-	if resp, err = client.Do(request); err != nil {
+	if resp, err = c.httpCli.Do(request); err != nil {
 		logger.Error("发送请求错误")
 		return
 	}

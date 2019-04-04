@@ -18,7 +18,8 @@ http调用包，用来发送http请求，并解析返回结果
   对发送的Header进行设置，可以在这里设置Cookie，方式为：
 
   ```
-    httplib.PostJSON(url, body, &resp, map[string]string{
+    httplib.NewClient().PostJSON(url, body, &resp,
+     	map[string]string{
                 "Cookie":"key=value",
             })
 
@@ -26,7 +27,7 @@ http调用包，用来发送http请求，并解析返回结果
   也可以在这里对返回内容解析方式进行指定，方式为：
 
   ```
-    httplib.PostJSON(url, body, &resp, map[string]string{
+    httplib.NewClient().PostJSON(url, body, &resp, map[string]string{
                    httplib.ResponseResultContentType:httplib.ContentTypeAppJson,
                 })
 
@@ -76,11 +77,11 @@ func Test(){
     }
 
     var output Output
-    httplib.PostJSON("http://apitest.vgmdj.cn",input,&output,nil)
+    httplib.NewClient().PostJSON("http://apitest.vgmdj.cn",input,&output,nil)
 
     //或者是
     output2 := make(map[string]interface{})
-    httplib.PostJSON("http://apitest.vgmdj.cn",input,&output2,map[string]string{
+    httplib.NewClient().PostJSON("http://apitest.vgmdj.cn",input,&output2,map[string]string{
             httplib.ResponseResultContentType:httplib.ContentTypeAppJson,
     })
 
