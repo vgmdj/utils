@@ -37,3 +37,6 @@ gopkg.in/chanxuehong/wechat.v2/internal/debug/api/retry
 gopkg.in/chanxuehong/wechat.v2/internal/debug/callback
 gopkg.in/chanxuehong/wechat.v2/internal/util
 gopkg.in/chanxuehong/wechat.v2/util
+# gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
+gopkg.in/mgo.v2/bson
+gopkg.in/mgo.v2/internal/json
