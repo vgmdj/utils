@@ -5,14 +5,17 @@ import (
 )
 
 func TestPostJSON(t *testing.T) {
-	var result string
-	err := NewClient().PostJSON("http://www.baidu.com", nil, &result,
-		map[string]string{ResponseResultContentType: ContentTypeDefault})
+	sn := ServerNow{}
+	c := UniqueClient(nil)
+	err := c.PostBytes("http://api.baidu.com/now", nil, &sn, nil)
 	if err != nil {
-		t.Error(err)
+		t.Error(err.Error())
 		return
 	}
 
-	t.Log(result)
+	if sn.Code != -405 {
+		t.Errorf("expected code -405 , but get %d", sn.Code)
+		return
+	}
 
 }

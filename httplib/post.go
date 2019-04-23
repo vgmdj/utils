@@ -1,7 +1,6 @@
 package httplib
 
 import (
-	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"net/http"
@@ -26,7 +25,7 @@ func (c *Client) PostJSON(postUrl string, body interface{}, respInfo interface{}
 		return
 	}
 
-	return c.post(postUrl, values, respInfo, headers)
+	return c.Raw(http.MethodPost, postUrl, values, respInfo, headers)
 }
 
 //PostXML http method post , content type application/xml
@@ -45,7 +44,7 @@ func (c *Client) PostXML(postUrl string, body interface{}, respInfo interface{},
 		return
 	}
 
-	return c.post(postUrl, values, respInfo, headers)
+	return c.Raw(http.MethodPost, postUrl, values, respInfo, headers)
 }
 
 //PostForm http method post , content type x-www-form-urlencoded
@@ -63,7 +62,7 @@ func (c *Client) PostForm(postUrl string, formValues map[string]string, respInfo
 		values[k] = []string{v}
 	}
 
-	return c.post(postUrl, []byte(values.Encode()), respInfo, headers)
+	return c.Raw(http.MethodPost, postUrl, []byte(values.Encode()), respInfo, headers)
 }
 
 //PostBytes http method post,
@@ -76,38 +75,5 @@ func (c *Client) PostBytes(postUrl string, bytes []byte, respInfo interface{}, h
 		headers["Content-Type"] = "text/plain;charset=UTF-8"
 	}
 
-	return c.post(postUrl, bytes, respInfo, headers)
-}
-
-//post http post request
-func (c *Client) post(url string, body []byte, respInfo interface{}, headers map[string]string) (err error) {
-	var (
-		request *http.Request
-		resp    *http.Response
-	)
-
-	logger.Info(url, string(body), headers)
-
-	if request, err = http.NewRequest("POST",
-		url, bytes.NewReader(body)); err != nil {
-		logger.Error("url ", url)
-		return
-	}
-
-	for k, v := range headers {
-		request.Header.Set(k, v)
-	}
-
-	if resp, err = c.httpCli.Do(request); err != nil {
-		logger.Error("发送请求错误")
-		return
-	}
-	defer resp.Body.Close()
-
-	contentType := resp.Header.Get("Content-Type")
-	if specified, ok := headers[ResponseResultContentType]; ok {
-		contentType = specified
-	}
-
-	return respParser(resp.Body, contentType, respInfo)
+	return c.Raw(http.MethodPost, postUrl, bytes, respInfo, headers)
 }

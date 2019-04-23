@@ -1,24 +1,28 @@
 package httplib
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 
 	"github.com/vgmdj/utils/logger"
 )
 
+//MIME
 const (
-	ContentTypeAppJson   = "application/json"
-	ContentTypeTextPlain = "text/plain"
-	ContentTypeAppXml    = "application/xml"
-	ContentTypeTextXml   = "text/xml"
-	ContentTypeDefault   = "decoder/default"
+	MIMEJSON              = "application/json"
+	MIMEXML               = "application/xml"
+	MIMEXML2              = "text/xml"
+	MIMEPlain             = "text/plain"
+	MIMEPOSTForm          = "application/x-www-form-urlencoded"
+	MIMEMultipartPOSTForm = "multipart/form-data"
+	MIMEHTML              = "text/html"
 )
 
+//ResponseResultContentType 指定返回数据解析方式
 const (
 	ResponseResultContentType = "Result-Parse-Content-Type-vgmdj"
 )
@@ -29,11 +33,14 @@ type RespDecoder interface {
 }
 
 var decoders = map[string]RespDecoder{
-	ContentTypeAppJson:   new(JsonDecoder),
-	ContentTypeTextPlain: new(TextDecoder),
-	ContentTypeAppXml:    new(XmlDecoder),
-	ContentTypeTextXml:   new(XmlDecoder),
-	ContentTypeDefault:   new(DefaultDecoder),
+	MIMEJSON:  new(JsonDecoder),
+	MIMEPlain: new(TextDecoder),
+	MIMEXML:   new(XmlDecoder),
+	MIMEXML2:  new(XmlDecoder),
+
+	//MIMEPOSTForm:          new(PostFormDecoder),
+	//MIMEMultipartPOSTForm: new(MultipartFormDecoder),
+	//MIMEHTML:              new(HtmlDecoder),
 }
 
 //JsonDecoder json处理类
@@ -66,23 +73,36 @@ func (td TextDecoder) Unmarshal(body []byte, v interface{}) error {
 	return nil
 }
 
-//DefaultDecoder 默认方式
-type DefaultDecoder struct{}
+//TODO
+//HtmlDecoder html处理类
+type HtmlDecoder struct{}
 
-//Unmarshal 默认解析处理方式
-func (dd DefaultDecoder) Unmarshal(body []byte, v interface{}) error {
-	return TextDecoder{}.Unmarshal(body, v)
+//Unmarshal html解析处理
+func (hd *HtmlDecoder) Unmarshal(body []byte, v interface{}) error {
+	return nil
+}
+
+//TODO
+//PostFormDecoder form-urlencoded 处理类
+type PostFormDecoder struct{}
+
+//Unmarshal post form 解析处理
+func (pfd *PostFormDecoder) Unmarshal(body []byte, v interface{}) error {
+	return nil
+}
+
+//TODO
+//MultipartFormDecoder multipart form data 处理类
+type MultipartFormDecoder struct{}
+
+//Unmarshal multipart form data 解析处理
+func (mfd *MultipartFormDecoder) Unmarshal(body []byte, v interface{}) error {
+	return nil
 }
 
 //respParser 对返回的body的处理
-func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err error) {
-	data, err := ioutil.ReadAll(body)
-	if err != nil {
-		logger.Error("resp body read err ")
-		return err
-	}
-
-	if data == nil {
+func respParser(body []byte, contentTypes string, v interface{}) (err error) {
+	if len(body) == 0 {
 		logger.Info("no body data")
 		return
 	}
@@ -91,17 +111,38 @@ func respParser(body io.Reader, contentTypes string, respInfo interface{}) (err 
 
 	decoder, ok := decoders[contentType]
 	if !ok {
-		logger.Error("unexpected content type ", contentType)
-		logger.Error("data : ", string(data))
+		logger.Error("unexpected content type ,you can use ResponseResultContentType in headers to specified the decode way")
+		logger.Error("data : ", string(body))
 
-		return fmt.Errorf("Cannot decode request for %s data ", data)
+		return fmt.Errorf("Cannot decode request by content-type %s ", contentType)
 	}
 
-	if err = decoder.Unmarshal(data, respInfo); err != nil {
-		logger.Error("err info ", string(data))
+	if err = decoder.Unmarshal(body, v); err != nil {
+		logger.Error("err info ", string(body))
 		return
 	}
 
 	return
 
+}
+
+// readAll reads from r until an error or EOF and returns the data it read
+// from the internal buffer allocated with a specified capacity.
+func readAll(r io.Reader, capacity int64) (b []byte, err error) {
+	buf := bytes.NewBuffer(make([]byte, 0, capacity))
+	// If the buffer overflows, we will get bytes.ErrTooLarge.
+	// Return that as an error. Any other panic remains.
+	defer func() {
+		e := recover()
+		if e == nil {
+			return
+		}
+		if panicErr, ok := e.(error); ok && panicErr == bytes.ErrTooLarge {
+			err = panicErr
+		} else {
+			panic(e)
+		}
+	}()
+	_, err = buf.ReadFrom(r)
+	return buf.Bytes(), err
 }
