@@ -11,32 +11,13 @@
 //	"github.com/vgmdj/utils/logger"
 //)
 //
-////主函数
 //func main() {
 //	amount := 400000
-//	standardCal(amount)
 //	poolCal(amount)
-//
-//}
-//
-//func standardCal(amount int) {
-//	start := time.Now()
-//	sum := 0
-//	for i := 0; i < amount; i++ {
-//		for j := i * 10000; j < (i+1)*10000; j++ {
-//			sum += j
-//		}
-//	}
-//
-//	end := time.Now()
-//	logger.Info(sum, end.Sub(start))
-//
-//}
 //
 //func poolCal(amount int) {
 //	start := time.Now()
 //
-//	//创建一个协程池,最大开启3个协程worker
 //	p := pool.NewPool(8, 1000)
 //
 //	result := make(chan int, 1000)

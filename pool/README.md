@@ -13,7 +13,6 @@ import (
 	"github.com/vgmdj/utils/logger"
 )
 
-//主函数
 func main() {
 	amount := 400000
 	standardCal(amount)
@@ -38,7 +37,6 @@ func standardCal(amount int) {
 func poolCal(amount int) {
 	start := time.Now()
 
-	//创建一个协程池,最大开启3个协程worker
 	p := pool.NewPool(8, 1000)
 
 	result := make(chan int, 1000)
