@@ -1,4 +1,4 @@
-//package pool goroutine pool
+//package task goroutine pool
 //example
 //
 //package main
@@ -6,7 +6,7 @@
 //import (
 //	"time"
 //
-//	"github.com/vgmdj/utils/pool"
+//	"github.com/vgmdj/utils/pool/task"
 //
 //	"github.com/vgmdj/utils/logger"
 //)
@@ -18,7 +18,7 @@
 //func poolCal(amount int) {
 //	start := time.Now()
 //
-//	p := pool.NewPool(8, 1000)
+//	p := task.NewPool(8, 1000)
 //
 //	result := make(chan int, 1000)
 //	go func() {
@@ -43,7 +43,7 @@
 //	go func() {
 //
 //		for i := 0; i < amount; i++ {
-//			t := pool.NewTask(func(args ...interface{}) {
+//			t := task.NewTask(func(args ...interface{}) {
 //				calculate(args[0].(int), args[1].(int), args[2].(chan int))
 //			}, i*10000, (i+1)*10000, result)
 //
@@ -66,7 +66,7 @@
 //}
 
 
-package pool
+package task
 
 // Task task
 type Task struct {
