@@ -1,7 +1,6 @@
 package httplib
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"net/http"
 	"net/url"

@@ -2,11 +2,12 @@ package httplib
 
 import (
 	"bytes"
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/json-iterator/go"
 
 	"github.com/vgmdj/utils/logger"
 )
@@ -31,6 +32,8 @@ const (
 type RespDecoder interface {
 	Unmarshal(reader []byte, v interface{}) error
 }
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var decoders = map[string]RespDecoder{
 	MIMEJSON:  new(JsonDecoder),
