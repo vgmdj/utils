@@ -1,11 +1,12 @@
 package chars
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"math"
 	"math/rand"
 	"strings"
 	"time"
+
+	"gopkg.in/mgo.v2/bson"
 
 	"github.com/pborman/uuid"
 )
@@ -181,6 +182,7 @@ func NewUUID(hyphen bool) string {
 
 }
 
-func NewBsonID()string{
+// NewBsonID return the bson id
+func NewBsonID() string {
 	return bson.NewObjectId().Hex()
 }
