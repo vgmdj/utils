@@ -28,7 +28,7 @@ http调用包，用来发送http请求，并解析返回结果
 
   ```
     httplib.NewClient(httplib.DefaultClientConf).PostJSON(url, body, &resp, map[string]string{
-                   httplib.ResponseResultContentType:httplib.ContentTypeAppJson,
+                   httplib.ResponseResultContentType:httplib.MIMEJSON,
                 })
 
 
@@ -84,7 +84,7 @@ func Test(){
     //或者是
     output2 := make(map[string]interface{})
     c.PostJSON("http://apitest.vgmdj.cn",input,&output2,map[string]string{
-            httplib.ResponseResultContentType:httplib.ContentTypeAppJson,
+            httplib.ResponseResultContentType:httplib.MIMEJSON,
     })
 
     fmt.Println(output)   //1234567890 test

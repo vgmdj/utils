@@ -172,7 +172,7 @@ func (c *Client) Do(request *http.Request, contentType ...*string) (bts []byte, 
 		return nil, err
 	}
 
-	if len(contentType) != 0 {
+	if len(contentType) == 0 {
 		*contentType[0] = resp.Header.Get("Content-type")
 	}
 
