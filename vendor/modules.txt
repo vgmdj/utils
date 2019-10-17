@@ -1,7 +1,5 @@
 # github.com/Luxurioust/excelize v1.3.0
 github.com/Luxurioust/excelize
-# github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
-github.com/axgle/mahonia
 # github.com/belogik/goes v0.0.0-20151229125003-e54d722c3aff
 github.com/belogik/goes
 # github.com/chanxuehong/rand v0.0.0-20180428235808-560f6cc0eaa5
@@ -18,24 +16,36 @@ github.com/go-ini/ini
 github.com/gogo/protobuf/proto
 # github.com/google/uuid v1.0.0
 github.com/google/uuid
+# github.com/json-iterator/go v1.1.7
+github.com/json-iterator/go
+# github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421
+github.com/modern-go/concurrent
+# github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+github.com/modern-go/reflect2
 # github.com/pborman/uuid v0.0.0-20180909234540-25cd46ecac86
 github.com/pborman/uuid
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/stretchr/testify v1.2.2
+# github.com/stretchr/testify v1.3.0
 github.com/stretchr/testify/assert
 # github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
 github.com/vgmdj/gb2260/gbdata
 # golang.org/x/crypto v0.0.0-20180820150726-614d502a4dac
-golang.org/x/crypto/scrypt
 golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/scrypt
+# golang.org/x/text v0.3.2
+golang.org/x/text/encoding
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/simplifiedchinese
+golang.org/x/text/transform
 # gopkg.in/chanxuehong/wechat.v2 v2.0.0-20180803114548-d901fc2b67e4
-gopkg.in/chanxuehong/wechat.v2/mp/core
-gopkg.in/chanxuehong/wechat.v2/mp/message/template
 gopkg.in/chanxuehong/wechat.v2/internal/debug/api
 gopkg.in/chanxuehong/wechat.v2/internal/debug/api/retry
 gopkg.in/chanxuehong/wechat.v2/internal/debug/callback
 gopkg.in/chanxuehong/wechat.v2/internal/util
+gopkg.in/chanxuehong/wechat.v2/mp/core
+gopkg.in/chanxuehong/wechat.v2/mp/message/template
 gopkg.in/chanxuehong/wechat.v2/util
 # gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
 gopkg.in/mgo.v2/bson

@@ -86,7 +86,7 @@ func (rc *CryptoCode) CheckCode(codes ...string) (err error) {
 }
 
 func (rc *CryptoCode) produce(base string) (code RedemptionCode, err error) {
-	btsc, err := aesEncrypt(base, rc.key)
+	btsc, err := aesEncrypt([]byte(base), []byte(rc.key))
 	if err != nil {
 		return code, err
 	}

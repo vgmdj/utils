@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"fmt"
+
+	"github.com/vgmdj/utils/logger"
 )
 
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
@@ -38,17 +41,17 @@ func ZeroUnPadding(origData []byte) []byte {
 }
 
 //AesCBCEncrypt aes cbc 128 pkcs7padding mode
-func AesCBCEncrypt(plaintext, key, iv string) (code []byte, err error) {
-	block, err := aes.NewCipher([]byte(key))
+func AesCBCEncrypt(plaintext, key, iv []byte) (code []byte, err error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 
 	blockSize := block.BlockSize()
 
-	origData := PKCS5Padding([]byte(plaintext), blockSize)
+	origData := PKCS5Padding(plaintext, blockSize)
 
-	blockMode := cipher.NewCBCEncrypter(block, []byte(iv))
+	blockMode := cipher.NewCBCEncrypter(block, iv)
 
 	code = make([]byte, len(origData))
 
@@ -57,16 +60,42 @@ func AesCBCEncrypt(plaintext, key, iv string) (code []byte, err error) {
 	return
 }
 
+func AesCBCDecrypt(ciphertext, key, iv []byte) (code []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	}
+
+	// The IV needs to be unique, but not secure. Therefore it's common to
+	// include it at the beginning of the ciphertext.
+	if len(ciphertext) < aes.BlockSize {
+		return nil, fmt.Errorf("ciphertext too short")
+	}
+
+	// CBC mode always works in whole blocks.
+	if len(ciphertext)%aes.BlockSize != 0 {
+		return nil, fmt.Errorf("ciphertext is not a multiple of the block size")
+	}
+
+	mode := cipher.NewCBCDecrypter(block, iv)
+
+	code = make([]byte, len(ciphertext))
+	mode.CryptBlocks(code, ciphertext)
+
+	return PKCS5UnPadding(code), nil
+}
+
 //AesECBEncrypt aes cbc 128 pkcs7padding mode
-func AesECBEncrypt(plaintext, key string) (code []byte, err error) {
-	block, err := aes.NewCipher([]byte(key))
+func AesECBEncrypt(plaintext, key []byte) (code []byte, err error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 
 	blockSize := block.BlockSize()
 
-	origData := PKCS5Padding([]byte(plaintext), blockSize)
+	origData := PKCS5Padding(plaintext, blockSize)
 
 	blockMode := NewECBEncrypter(block)
 
@@ -78,8 +107,8 @@ func AesECBEncrypt(plaintext, key string) (code []byte, err error) {
 }
 
 //AesECBDecrypt aes cbc 128 pkcs7padding mode
-func AesECBDecrypt(cipherText, key string) (code []byte, err error) {
-	block, err := aes.NewCipher([]byte(key))
+func AesECBDecrypt(cipherText, key []byte) (code []byte, err error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
@@ -88,22 +117,22 @@ func AesECBDecrypt(cipherText, key string) (code []byte, err error) {
 
 	code = make([]byte, len(cipherText))
 
-	blockMode.CryptBlocks(code, []byte(cipherText))
+	blockMode.CryptBlocks(code, cipherText)
 
 	return PKCS5UnPadding(code), nil
 }
 
-func aesEncrypt(ext, key string) (code []byte, err error) {
-	block, err := aes.NewCipher([]byte(key))
+func aesEncrypt(ext, key []byte) (code []byte, err error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 
 	blockSize := block.BlockSize()
 
-	origData := PKCS5Padding([]byte(ext), blockSize)
+	origData := PKCS5Padding(ext, blockSize)
 
-	blockMode := cipher.NewCBCEncrypter(block, []byte(key)[:blockSize])
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
 
 	code = make([]byte, len(origData))
 
