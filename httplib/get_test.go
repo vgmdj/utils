@@ -22,6 +22,16 @@ func TestClientGet(t *testing.T) {
 
 }
 
+func TestClientGetNull(t *testing.T) {
+	c := UniqueClient(nil)
+	err := c.Get("http://localhost:9090/test", nil, nil, nil)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+}
+
 func TestClientGetSearch(t *testing.T) {
 	html := ""
 	c := NewClient(nil)

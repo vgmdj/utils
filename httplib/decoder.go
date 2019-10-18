@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 
 	"github.com/vgmdj/utils/logger"
 )
@@ -25,7 +25,9 @@ const (
 
 //ResponseResultContentType 指定返回数据解析方式
 const (
+	ContentType               = "Content-Type"
 	ResponseResultContentType = "Result-Parse-Content-Type-vgmdj"
+	ResponseResultAllowNull   = "Result-Parse-Allow-Null"
 )
 
 //RespDecoder 用于处理请求的返回数据
@@ -103,24 +105,53 @@ func (mfd *MultipartFormDecoder) Unmarshal(body []byte, v interface{}) error {
 	return nil
 }
 
-//respParser 对返回的body的处理
-func respParser(body []byte, contentTypes string, v interface{}) (err error) {
-	if len(body) == 0 {
-		logger.Info("no body data")
-		return
+// parser 用于解析返回内容的解析器
+type parser struct {
+	decoder       RespDecoder
+	respAllowNull bool
+}
+
+func newParser(config map[string]string) (*parser, error) {
+	p := new(parser)
+
+	contentType := config[ContentType]
+	if ct, ok := config[ResponseResultContentType]; ok && ct != "" {
+		contentType = ct
 	}
 
-	contentType := strings.Split(contentTypes, ";")[0]
+	if contentType == "" {
+		contentType = MIMEPlain
+	}
 
+	contentType = strings.Split(contentType, ";")[0]
 	decoder, ok := decoders[contentType]
 	if !ok {
 		logger.Error("unexpected content type ,you can use ResponseResultContentType in headers to specified the decode way")
-		logger.Error("data : ", string(body))
+		return nil, fmt.Errorf("Cannot decode request by content-type %s ", contentType)
+	}
+	p.decoder = decoder
 
-		return fmt.Errorf("Cannot decode request by content-type %s ", contentType)
+	p.respAllowNull = true
+	if config[ResponseResultAllowNull] == "false" {
+		p.respAllowNull = false
 	}
 
-	if err = decoder.Unmarshal(body, v); err != nil {
+	return p, nil
+
+}
+
+//respParser 对返回的body的处理
+func (p *parser) respParser(body []byte, v interface{}) (err error) {
+	if len(body) == 0 && !p.respAllowNull {
+		logger.Error("no body data")
+		return fmt.Errorf("body not allow null , but get nothing")
+	}
+
+	if len(body) == 0 {
+		return
+	}
+
+	if err = p.decoder.Unmarshal(body, v); err != nil {
 		logger.Error("err info ", string(body))
 		return
 	}

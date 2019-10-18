@@ -4,18 +4,31 @@ import (
 	"testing"
 )
 
+
+/*
+{
+api: "mtop.common.getTimestamp",
+v: "*",
+ret: [
+"SUCCESS::接口调用成功"
+],
+data: {
+t: "1571388909183"
+}
+}
+
+*/
+
+
 func TestPostJSON(t *testing.T) {
-	sn := ServerNow{}
 	c := UniqueClient(nil)
-	err := c.PostBytes("http://api.baidu.com/now", nil, &sn, nil)
+	result := make(map[string]interface{})
+	err := c.PostBytes("http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", nil, &result, nil)
 	if err != nil {
 		t.Error(err.Error())
 		return
 	}
 
-	if sn.Code != -405 {
-		t.Errorf("expected code -405 , but get %d", sn.Code)
-		return
-	}
+	t.Log(result)
 
 }

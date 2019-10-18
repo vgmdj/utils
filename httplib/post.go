@@ -14,8 +14,8 @@ func (c *Client) PostJSON(postUrl string, body interface{}, respInfo interface{}
 		headers = make(map[string]string)
 	}
 
-	if _, ok := headers["Content-Type"]; !ok {
-		headers["Content-Type"] = "application/json;charset=UTF-8"
+	if _, ok := headers[ContentType]; !ok {
+		headers[ContentType] = "application/json;charset=UTF-8"
 	}
 
 	var values []byte
@@ -33,8 +33,8 @@ func (c *Client) PostXML(postUrl string, body interface{}, respInfo interface{},
 		headers = make(map[string]string)
 	}
 
-	if _, ok := headers["Content-Type"]; !ok {
-		headers["Content-Type"] = "application/xml;charset=UTF-8"
+	if _, ok := headers[ContentType]; !ok {
+		headers[ContentType] = "application/xml;charset=UTF-8"
 	}
 
 	var values []byte
@@ -52,8 +52,8 @@ func (c *Client) PostForm(postUrl string, formValues map[string]string, respInfo
 		headers = make(map[string]string)
 	}
 
-	if _, ok := headers["Content-Type"]; !ok {
-		headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8"
+	if _, ok := headers[ContentType]; !ok {
+		headers[ContentType] = "application/x-www-form-urlencoded;charset=UTF-8"
 	}
 
 	values := make(url.Values)
@@ -70,8 +70,8 @@ func (c *Client) PostBytes(postUrl string, bytes []byte, respInfo interface{}, h
 		headers = make(map[string]string)
 	}
 
-	if _, ok := headers["Content-Type"]; !ok {
-		headers["Content-Type"] = "text/plain;charset=UTF-8"
+	if _, ok := headers[ContentType]; !ok {
+		headers[ContentType] = "text/plain;charset=UTF-8"
 	}
 
 	return c.Raw(http.MethodPost, postUrl, bytes, respInfo, headers)

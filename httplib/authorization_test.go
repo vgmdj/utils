@@ -27,16 +27,16 @@ func TestBasicAuth(t *testing.T) {
 
 	if len(req.Header) != 2 {
 		t.Errorf("expected header length 2, but get %d\n", len(req.Header))
-		t.Error("headers",req.Header)
+		t.Error("headers", req.Header)
 		return
 	}
 
-	data, err := c.Do(req)
+	data, headers, err := c.DoWithData(req)
 	if err != nil {
 		t.Error(err.Error())
 		return
 	}
 
-	t.Log(string(data))
+	t.Log(string(data), headers)
 
 }

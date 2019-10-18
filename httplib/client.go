@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"sync"
@@ -112,21 +111,34 @@ func (c *Client) SetConfig(conf *ClientConf) {
 func (c *Client) Raw(method, uri string, body []byte, v interface{}, headers map[string]string) (err error) {
 	logger.Info(uri, string(body), headers)
 
+	if headers == nil {
+		headers = make(map[string]string)
+	}
+
 	request, err := c.NewRequest(method, uri, body, headers)
 	if err != nil {
 		logger.Error(err.Error())
 		return
 	}
 
-	contentType := headers[ResponseResultContentType]
-
-	data, err := c.Do(request, &contentType)
+	rb, rh, err := c.DoWithData(request)
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return
 	}
 
-	return respParser(data, contentType, v)
+	config := make(map[string]string)
+	config[ResponseResultContentType] = headers[ResponseResultContentType]
+	config[ResponseResultAllowNull] = headers[ResponseResultAllowNull]
+	config[ContentType] = rh.Get(ContentType)
+
+	p, err := newParser(config)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	}
+
+	return p.respParser(rb, v)
 
 }
 
@@ -150,31 +162,30 @@ func (c *Client) NewRequest(method, uri string, body []byte, headers map[string]
 }
 
 //Do sends an HTTP request and return response data
-func (c *Client) Do(request *http.Request, contentType ...*string) (bts []byte, err error) {
-	resp, err := c.httpCli.Do(request)
+func (c *Client) Do(request *http.Request) (resp *http.Response, err error) {
+	return c.httpCli.Do(request)
+}
+
+//Do sends an HTTP request and return response data
+func (c *Client) DoWithData(request *http.Request) ([]byte, http.Header, error) {
+	resp, err := c.Do(request)
 	if err != nil {
 		logger.Error(err.Error())
 		logger.Error("发送请求错误")
-		return nil, err
+		return nil, nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode/100 != 2 {
 		logger.Error("bad request , status code :", resp.StatusCode)
-		bts, _ = ioutil.ReadAll(resp.Body)
-		logger.Error("return data :", string(bts))
-		return nil, fmt.Errorf("bad request %d", resp.StatusCode)
+		return nil, nil, fmt.Errorf("bad request %d", resp.StatusCode)
 	}
 
-	bts, err = readAll(resp.Body, MinRead)
+	bts, err := readAll(resp.Body, MinRead)
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, err
+		return nil, nil, err
 	}
 
-	if len(contentType) == 0 {
-		*contentType[0] = resp.Header.Get("Content-type")
-	}
-
-	return
+	return bts, resp.Header, nil
 }
