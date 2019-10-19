@@ -24,6 +24,11 @@ func PKCS5UnPadding(origData []byte) []byte {
 	}
 
 	unpadding := int(origData[length-1])
+	if unpadding < 0 {
+		logger.Warning(fmt.Sprintf("index out of range, want to use left %d, but length is %d",
+			length-unpadding, length))
+	}
+
 	return origData[:(length - unpadding)]
 }
 
