@@ -9,6 +9,7 @@ import (
 	"github.com/vgmdj/utils/logger"
 )
 
+// PKCS5Padding pkcs5 padding 方式
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize //需要padding的数目
 	//只要少于256就能放到一个byte中，默认的blockSize=16(即采用16*8=128, AES-128长的密钥)
@@ -17,27 +18,31 @@ func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	return append(ciphertext, padtext...)
 }
 
-func PKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
+// PKCS5 UnPadding 方式
+func PKCS5UnPadding(originData []byte) []byte {
+	length := len(originData)
 	if length == 0 {
-		return origData
+		return originData
 	}
 
-	unpadding := int(origData[length-1])
-	if unpadding < 0 {
+	unpadding := int(originData[length-1])
+	if unpadding > length {
 		logger.Warning(fmt.Sprintf("index out of range, want to use left %d, but length is %d",
 			length-unpadding, length))
+		return originData
 	}
 
-	return origData[:(length - unpadding)]
+	return originData[:(length - unpadding)]
 }
 
+// ZeroPadding 补0 padding
 func ZeroPadding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	padtext := bytes.Repeat([]byte{0}, padding) //用0去填充
 	return append(ciphertext, padtext...)
 }
 
+// ZeroUnPadding 去零 unpadding
 func ZeroUnPadding(origData []byte) []byte {
 	return bytes.TrimFunc(origData,
 		func(r rune) bool {
@@ -45,8 +50,50 @@ func ZeroUnPadding(origData []byte) []byte {
 		})
 }
 
-//AesCBCEncrypt aes cbc 128 pkcs7padding mode
-func AesCBCEncrypt(plaintext, key, iv []byte) (code []byte, err error) {
+// AesGCMEncrypt aes gcm
+func AesGCMEncrypt(plainText, key, nonce []byte) (cipherText []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	cipherText = aesgcm.Seal(nil, nonce, plainText, nil)
+
+	return
+
+}
+
+// AesGCMDecrypt aes gcm decrypt
+func AesGCMDecrypt(cipherText, key, nonce []byte) (plainText []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(cipherText) < aes.BlockSize {
+		return nil, fmt.Errorf("ciphertext too short")
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	plainText, err = aesgcm.Open(nil, nonce, cipherText, nil)
+	if err != nil {
+		return
+	}
+
+	return plainText, nil
+}
+
+// AesCBCEncrypt aes cbc pkcs7padding mode
+func AesCBCEncrypt(plainText, key, iv []byte) (cipherText []byte, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -54,45 +101,149 @@ func AesCBCEncrypt(plaintext, key, iv []byte) (code []byte, err error) {
 
 	blockSize := block.BlockSize()
 
-	origData := PKCS5Padding(plaintext, blockSize)
+	origData := PKCS5Padding(plainText, blockSize)
 
 	blockMode := cipher.NewCBCEncrypter(block, iv)
 
-	code = make([]byte, len(origData))
+	cipherText = make([]byte, len(origData))
 
-	blockMode.CryptBlocks(code, origData)
+	blockMode.CryptBlocks(cipherText, origData)
 
 	return
 }
 
-func AesCBCDecrypt(ciphertext, key, iv []byte) (code []byte, err error) {
+// AesCBCDecrypt aes cbc pkcs7 unpadding
+func AesCBCDecrypt(cipherText, key, iv []byte) (plainText []byte, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		logger.Error(err.Error())
 		return
 	}
 
-	// The IV needs to be unique, but not secure. Therefore it's common to
-	// include it at the beginning of the ciphertext.
-	if len(ciphertext) < aes.BlockSize {
+	if len(cipherText) < aes.BlockSize {
 		return nil, fmt.Errorf("ciphertext too short")
 	}
 
 	// CBC mode always works in whole blocks.
-	if len(ciphertext)%aes.BlockSize != 0 {
+	if len(cipherText)%aes.BlockSize != 0 {
 		return nil, fmt.Errorf("ciphertext is not a multiple of the block size")
 	}
 
 	mode := cipher.NewCBCDecrypter(block, iv)
 
-	code = make([]byte, len(ciphertext))
-	mode.CryptBlocks(code, ciphertext)
+	plainText = make([]byte, len(cipherText))
+	mode.CryptBlocks(plainText, cipherText)
 
-	return PKCS5UnPadding(code), nil
+	return PKCS5UnPadding(plainText), nil
 }
 
-//AesECBEncrypt aes cbc 128 pkcs7padding mode
-func AesECBEncrypt(plaintext, key []byte) (code []byte, err error) {
+// AesCFBEncrypt aes cfb encrypt pkcs7padding mode
+func AesCFBEncrypt(plainText, key, iv []byte) (cipherText []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSize := block.BlockSize()
+	origData := PKCS5Padding(plainText, blockSize)
+
+	cipherText = make([]byte, len(origData))
+	stream := cipher.NewCFBEncrypter(block, iv)
+	stream.XORKeyStream(cipherText, origData)
+
+	return
+}
+
+// AesCFBDecrypt aes cfb encrypt pkcs7padding mode
+func AesCFBDecrypt(cipherText, key, iv []byte) (plainText []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(cipherText) < aes.BlockSize {
+		return nil, fmt.Errorf("ciphertext too short")
+	}
+
+	stream := cipher.NewCFBDecrypter(block, iv)
+	plainText = make([]byte, len(cipherText))
+	stream.XORKeyStream(plainText, cipherText)
+
+	return PKCS5UnPadding(plainText), nil
+}
+
+// AesCTR use aes ctr
+// CTR mode is the same for both encryption and decryption, but we need to solve
+// the fill bytes, so split the mode into encrypt and decrypt
+func AesCTREncrypt(originText, key, iv []byte) (result []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSize := block.BlockSize()
+	originText = PKCS5Padding(originText, blockSize)
+
+	result = make([]byte, len(originText))
+	stream := cipher.NewCTR(block, iv)
+	stream.XORKeyStream(result, originText)
+
+	return result, nil
+}
+
+// AesCTRDecrypt use aes ctr
+// CTR mode is the same for both encryption and decryption, but we need to solve
+// the fill bytes, so split the mode into encrypt and decrypt
+func AesCTRDecrypt(originText, key, iv []byte) (result []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	resultText := make([]byte, len(originText))
+	stream := cipher.NewCTR(block, iv)
+	stream.XORKeyStream(resultText, originText)
+
+	return PKCS5UnPadding(resultText), nil
+}
+
+// AesOFB use aes ofb
+// OFB mode is the same for both encryption and decryption, but we need to solve
+// the fill bytes, so split the mode into encrypt and decrypt
+func AesOFBEncrypt(originText, key, iv []byte) (result []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSize := block.BlockSize()
+	originText = PKCS5Padding(originText, blockSize)
+
+	result = make([]byte, len(originText))
+	stream := cipher.NewOFB(block, iv)
+	stream.XORKeyStream(result, originText)
+
+	return
+}
+
+// AesOFB use aes ofb
+// CTR mode is the same for both encryption and decryption, but we need to solve
+// the fill bytes, so split the mode into encrypt and decrypt
+func AesOFBDecrypt(originText, key, iv []byte) (result []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	resultText := make([]byte, len(originText))
+	stream := cipher.NewOFB(block, iv)
+	stream.XORKeyStream(resultText, originText)
+
+	return PKCS5UnPadding(resultText), nil
+}
+
+// AesECBEncrypt aes ecb pkcs7padding mode
+func AesECBEncrypt(plainText, key []byte) (cipherText []byte, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -100,19 +251,19 @@ func AesECBEncrypt(plaintext, key []byte) (code []byte, err error) {
 
 	blockSize := block.BlockSize()
 
-	origData := PKCS5Padding(plaintext, blockSize)
+	origData := PKCS5Padding(plainText, blockSize)
 
 	blockMode := NewECBEncrypter(block)
 
-	code = make([]byte, len(origData))
+	cipherText = make([]byte, len(origData))
 
-	blockMode.CryptBlocks(code, origData)
+	blockMode.CryptBlocks(cipherText, origData)
 
 	return
 }
 
-//AesECBDecrypt aes cbc 128 pkcs7padding mode
-func AesECBDecrypt(cipherText, key []byte) (code []byte, err error) {
+// AesECBDecrypt aes ecb pkcs7padding mode
+func AesECBDecrypt(cipherText, key []byte) (plainText []byte, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -120,30 +271,11 @@ func AesECBDecrypt(cipherText, key []byte) (code []byte, err error) {
 
 	blockMode := NewECBDecrypter(block)
 
-	code = make([]byte, len(cipherText))
+	plainText = make([]byte, len(cipherText))
 
-	blockMode.CryptBlocks(code, cipherText)
+	blockMode.CryptBlocks(plainText, cipherText)
 
-	return PKCS5UnPadding(code), nil
-}
-
-func aesEncrypt(ext, key []byte) (code []byte, err error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-
-	blockSize := block.BlockSize()
-
-	origData := PKCS5Padding(ext, blockSize)
-
-	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
-
-	code = make([]byte, len(origData))
-
-	blockMode.CryptBlocks(code, origData)
-
-	return
+	return PKCS5UnPadding(plainText), nil
 }
 
 type ecb struct {

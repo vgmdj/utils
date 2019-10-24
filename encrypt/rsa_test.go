@@ -10,35 +10,45 @@ func TestRsaEncrypt(t *testing.T) {
 	ast := assert.New(t)
 
 	var privateKey = []byte(`
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQDZsfv1qscqYdy4vY+P4e3cAtmvppXQcRvrF1cB4drkv0haU24Y
-7m5qYtT52Kr539RdbKKdLAM6s20lWy7+5C0DgacdwYWd/7PeCELyEipZJL07Vro7
-Ate8Bfjya+wltGK9+XNUIHiumUKULW4KDx21+1NLAUeJ6PeW+DAkmJWF6QIDAQAB
-AoGBAJlNxenTQj6OfCl9FMR2jlMJjtMrtQT9InQEE7m3m7bLHeC+MCJOhmNVBjaM
-ZpthDORdxIZ6oCuOf6Z2+Dl35lntGFh5J7S34UP2BWzF1IyyQfySCNexGNHKT1G1
-XKQtHmtc2gWWthEg+S6ciIyw2IGrrP2Rke81vYHExPrexf0hAkEA9Izb0MiYsMCB
-/jemLJB0Lb3Y/B8xjGjQFFBQT7bmwBVjvZWZVpnMnXi9sWGdgUpxsCuAIROXjZ40
-IRZ2C9EouwJBAOPjPvV8Sgw4vaseOqlJvSq/C/pIFx6RVznDGlc8bRg7SgTPpjHG
-4G+M3mVgpCX1a/EU1mB+fhiJ2LAZ/pTtY6sCQGaW9NwIWu3DRIVGCSMm0mYh/3X9
-DAcwLSJoctiODQ1Fq9rreDE5QfpJnaJdJfsIJNtX1F+L3YceeBXtW0Ynz2MCQBI8
-9KP274Is5FkWkUFNKnuKUK4WKOuEXEO+LpR+vIhs7k6WQ8nGDd4/mujoJBr5mkrw
-DPwqA3N5TMNDQVGv8gMCQQCaKGJgWYgvo3/milFfImbp+m7/Y3vCptarldXrYQWO
-AQjxwc71ZGBFDITYvdgJM1MTqc8xQek1FXn1vfpy2c6O
------END RSA PRIVATE KEY-----
+-----BEGIN PRIVATE KEY-----
+MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBALPLWPASm/x0ZLAl
+4XHWM3K8p6EmJ67MoL7X2srkHwTbJ/VHoXdjFKw0DGT5D3pWTqHokmJFjFyvGb7G
+BFZ8NwLZ405L0rD/CZFYylJfg8k+Hi0BW0CobjPgASnXCY+bmkUyWdnxdDDOHs3J
+kH+okoUyy+jIyiFwzG1j4mq9mWZ7AgMBAAECgYEAnHkAsg7ACnoRluugxL2ykMx2
+5tyZ9JrJ2s1o8OKPzF4e7GymrYxhVW0GzGmlesbaMDaED1qPyanqMgmLhOkdxbsS
+R7feu2mCX1NttoNsnkPOnvO+ercJsa5gI0YcKhsNIpcJ9sAoM3C/AjtTTD2vZIhs
+iyS2Cdu52aX/InYo5kECQQDmZVKjeniVAJqRyTkLnLP8H16v49SabvLw1RbwPTQ8
+ND7bEYeAT4Vux3PwVIEsYADc/sEbBYhFMMroCvbad0DZAkEAx8ZuXwwQhTDVyd9I
+nMMdTJDmVFnAcpbQgjjCdZ8YUc+jZeTsS2jXSFmCjopmN2s46bvnT0FK1Lte1dt4
+4/ZNcwJAOMvpn1tltnW7pQzR/0bWJ+Uj1oB3vMp1IWGmkfrEkcLfa+naWYtA/Zo1
+vp1WarYQAGrc9+hZO5VXr/Rj/l8/oQJBAL1gn9Q+LZL1HlUF82GXnLiuS4n+ou59
+hR9NCxpRPM6hFPZMsqsxsZMGNztEe21hmUwJMlbxQCy1iksUiF8hZ30CQQCw/DWY
+Vv703cVD3HxI7T85x49xrgXsrMkV28mMdtZlgHIcEMK7KCYBBue7S7geSqNkNf/d
+e8/AOABBMttS7noe
+-----END PRIVATE KEY-----
+
 `)
 
 	var publicKey = []byte(`
 -----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDZsfv1qscqYdy4vY+P4e3cAtmv
-ppXQcRvrF1cB4drkv0haU24Y7m5qYtT52Kr539RdbKKdLAM6s20lWy7+5C0Dgacd
-wYWd/7PeCELyEipZJL07Vro7Ate8Bfjya+wltGK9+XNUIHiumUKULW4KDx21+1NL
-AUeJ6PeW+DAkmJWF6QIDAQAB
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzy1jwEpv8dGSwJeFx1jNyvKeh
+JieuzKC+19rK5B8E2yf1R6F3YxSsNAxk+Q96Vk6h6JJiRYxcrxm+xgRWfDcC2eNO
+S9Kw/wmRWMpSX4PJPh4tAVtAqG4z4AEp1wmPm5pFMlnZ8XQwzh7NyZB/qJKFMsvo
+yMohcMxtY+JqvZlmewIDAQAB
 -----END PUBLIC KEY-----
 `)
 
-	cipherText, _ := RsaEncrypt([]byte("this is rsa encrypt"), publicKey)
+	cipherText, err := RsaEncrypt([]byte("this is rsa encrypt"), publicKey)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
 
-	plainText, _ := RsaDecrypt(cipherText, privateKey)
+	plainText, err := RsaDecrypt(cipherText, privateKey)
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
 
 	ast.Equal("this is rsa encrypt", string(plainText))
 

@@ -8,6 +8,10 @@ import (
 	"github.com/vgmdj/utils/chars"
 )
 
+var (
+	defaultIV = []byte("0123456789012345")
+)
+
 type CryptoCode struct {
 	baseLen     int
 	extendedLen int
@@ -86,7 +90,8 @@ func (rc *CryptoCode) CheckCode(codes ...string) (err error) {
 }
 
 func (rc *CryptoCode) produce(base string) (code RedemptionCode, err error) {
-	btsc, err := aesEncrypt([]byte(base), []byte(rc.key))
+
+	btsc, err := AesCBCEncrypt([]byte(base), []byte(rc.key), defaultIV)
 	if err != nil {
 		return code, err
 	}

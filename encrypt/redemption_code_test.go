@@ -18,8 +18,6 @@ func TestRedemptionCode_Produce(t *testing.T) {
 		return
 	}
 
-	t.Log(codes)
-
 	checkStr := []string{}
 	for _, v := range codes {
 		checkStr = append(checkStr, v.FinalCode)
