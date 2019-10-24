@@ -144,12 +144,13 @@ func AesCFBEncrypt(plainText, key, iv []byte) (cipherText []byte, err error) {
 		return nil, err
 	}
 
-	blockSize := block.BlockSize()
-	origData := PKCS5Padding(plainText, blockSize)
+	// TODO aes cfb padding 方式不一致
+	//blockSize := block.BlockSize()
+	//plainText =  PKCS5Padding(plainText, blockSize)
 
-	cipherText = make([]byte, len(origData))
+	cipherText = make([]byte, len(plainText))
 	stream := cipher.NewCFBEncrypter(block, iv)
-	stream.XORKeyStream(cipherText, origData)
+	stream.XORKeyStream(cipherText, plainText)
 
 	return
 }
@@ -169,7 +170,8 @@ func AesCFBDecrypt(cipherText, key, iv []byte) (plainText []byte, err error) {
 	plainText = make([]byte, len(cipherText))
 	stream.XORKeyStream(plainText, cipherText)
 
-	return PKCS5UnPadding(plainText), nil
+	// TODO aes cfb unpadding 方式不一致
+	return plainText, nil
 }
 
 // AesCTR use aes ctr
@@ -216,8 +218,9 @@ func AesOFBEncrypt(originText, key, iv []byte) (result []byte, err error) {
 		return nil, err
 	}
 
-	blockSize := block.BlockSize()
-	originText = PKCS5Padding(originText, blockSize)
+	// TODO aes ofb padding 方式不一致
+	//blockSize := block.BlockSize()
+	//originText = PKCS5Padding(originText, blockSize)
 
 	result = make([]byte, len(originText))
 	stream := cipher.NewOFB(block, iv)
@@ -239,7 +242,8 @@ func AesOFBDecrypt(originText, key, iv []byte) (result []byte, err error) {
 	stream := cipher.NewOFB(block, iv)
 	stream.XORKeyStream(resultText, originText)
 
-	return PKCS5UnPadding(resultText), nil
+	// TODO aes ofb unpadding 方式不一致
+	return resultText, nil
 }
 
 // AesECBEncrypt aes ecb pkcs7padding mode
