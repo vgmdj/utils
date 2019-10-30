@@ -1,10 +1,11 @@
 package sms
 
 import (
+	"sync"
+
 	"github.com/vgmdj/utils/logger"
 	"gopkg.in/chanxuehong/wechat.v2/mp/core"
 	wxTemp "gopkg.in/chanxuehong/wechat.v2/mp/message/template"
-	"sync"
 )
 
 var (
@@ -61,6 +62,7 @@ func (wx *WeChat) SendMsg(to string, args ...string) (err error) {
 	tm2 := wxTemp.TemplateMessage2{
 		ToUser:     to,
 		TemplateId: wx.DefaultTemplate.TemplateId,
+		URL:        wx.DefaultTemplate.URL,
 		Data:       wx.setData(args[:], wx.DefaultTemplate),
 	}
 
@@ -80,6 +82,7 @@ func (wx *WeChat) SendMsgWithTemplate(template Template, to string, args ...stri
 	tm2 := wxTemp.TemplateMessage2{
 		ToUser:     to,
 		TemplateId: template.TemplateId,
+		URL:        template.URL,
 		Data:       wx.setData(args[:], template),
 	}
 

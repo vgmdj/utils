@@ -41,6 +41,7 @@ func TestWeChat(t *testing.T) {
 			"keyword4": "#1E90FF",
 			"remark":   "#191970",
 		},
+		URL: "http://www.google.com",
 	}
 
 	err := wxsms.SendMsgWithTemplate(template, "omHgCwm_DFWghRVayaJ35AggBLG8",

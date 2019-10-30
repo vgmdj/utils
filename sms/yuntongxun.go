@@ -97,7 +97,7 @@ func (client *RLYun) SendMsg(to string, args ...string) (err error) {
 	body := rlSMRequest{AppId: client.AppId, TemplateId: client.DefaultTemplate.TemplateId, To: to, Datas: args}
 	resp := rlSMResponse{}
 
-	err = httplib.NewClient().PostJSON(client.RestURL.String(), body, &resp, headers)
+	err = httplib.NewClient(nil).PostJSON(client.RestURL.String(), body, &resp, headers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -125,7 +125,7 @@ func (client *RLYun) SendMsgWithTemplate(template Template, to string, args ...s
 	body := rlSMRequest{AppId: client.AppId, TemplateId: template.TemplateId, To: to, Datas: args}
 	resp := rlSMResponse{}
 
-	err = httplib.NewClient().PostJSON(client.RestURL.String(), body, &resp, headers)
+	err = httplib.NewClient(nil).PostJSON(client.RestURL.String(), body, &resp, headers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

@@ -60,4 +60,5 @@ type Template struct {
 	TemplateId string
 	Keys       []string
 	Color      map[string]string
+	URL        string
 }
