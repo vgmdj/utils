@@ -12,14 +12,9 @@ type TestCase1 struct {
 }
 
 func TestLogger(t *testing.T) {
-	SetAsync()
-	SetLevel(LevelDebug)
-	SetLogFuncCall(true)
-
 	Info("this is info")
-	Debug("this is debug")
 	Error("this is error")
-	Warning("this is warning")
+	Warn("this is warning")
 
 	case1 := TestCase1{
 		ID:   "123",
@@ -28,9 +23,8 @@ func TestLogger(t *testing.T) {
 	}
 
 	Info(case1)
-	Debug(case1)
+	Warn(case1)
 	Error(case1)
-	Warning(case1)
 
 	time.Sleep(time.Second)
 }

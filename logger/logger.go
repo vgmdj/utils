@@ -1,107 +1,122 @@
 package logger
 
 import (
-	"strings"
-
-	"github.com/vgmdj/utils/logger/logs"
+	"fmt"
+	"go.uber.org/zap"
+	"log"
 )
 
-// Log levels to control the logging output.
-const (
-	LevelEmergency = iota
-	LevelAlert
-	LevelCritical
-	LevelError
-	LevelWarning
-	LevelNotice
-	LevelInformational
-	LevelDebug
+var (
+	l *Logger
 )
 
-// BeeLogger references the used application logger.
-var BeeLogger = logs.GetBeeLogger()
+type Logger struct {
+	logger *zap.Logger
+	c      *Config
+}
 
-// init set the default log config
 func init() {
-	logs.SetLogFuncCall(true)
+	c := DefaultConfig
+	l = &Logger{
+		c: c,
+	}
+	l.logger = NewLogger(l.c)
+	defer l.logger.Sync()
 }
 
-// SetLevel sets the global log level used by the simple logger.
-func SetLevel(l int) {
-	logs.SetLevel(l)
+// NewLogger create a new zap logger
+func NewLogger(c *Config) *zap.Logger {
+	zc := c.NewZapConfig()
+	ops := c.SetWriter()
+	l, err := zc.Build(ops...)
+	if err != nil {
+		// TODO can set alert
+		log.Println(err.Error())
+	}
+
+	return l
 }
 
-// SetAsync sets the global log is async
-func SetAsync() {
-	logs.Async()
+// Reset reset the global logger
+func Reset(c *Config) {
+	l = &Logger{
+		c: c,
+	}
+	l.logger = NewLogger(l.c)
+	defer l.logger.Sync()
 }
 
-// SetLogFuncCall set the CallDepth, default is 3
-func SetLogFuncCall(b bool) {
-	logs.SetLogFuncCall(b)
+// Info uses fmt.Sprint to construct and log a message.
+func Info(args ...interface{}) {
+	l.logger.Info(fmt.Sprint(args...))
 }
 
-// SetLogger sets a new logger.
-func SetLogger(adaptername string, config string) error {
-	return logs.SetLogger(adaptername, config)
+// Warn uses fmt.Sprint to construct and log a message.
+func Warn(args ...interface{}) {
+	l.logger.Warn(fmt.Sprint(args...))
 }
 
-// Emergency logs a message at emergency level.
-func Emergency(v ...interface{}) {
-	logs.Emergency(generateFmtStr(len(v)), v...)
+// Error uses fmt.Sprint to construct and log a message.
+func Error(args ...interface{}) {
+	l.logger.Error(fmt.Sprint(args...))
 }
 
-// Alert logs a message at alert level.
-func Alert(v ...interface{}) {
-	logs.Alert(generateFmtStr(len(v)), v...)
+// Panic uses fmt.Sprint to construct and log a message, then panics.
+func Panic(args ...interface{}) {
+	l.logger.Panic(fmt.Sprint(args...))
 }
 
-// Critical logs a message at critical level.
-func Critical(v ...interface{}) {
-	logs.Critical(generateFmtStr(len(v)), v...)
+// Fatal uses fmt.Sprint to construct and log a message, then calls os.Exit.
+func Fatal(args ...interface{}) {
+	l.logger.Fatal(fmt.Sprint(args...))
 }
 
-// Error logs a message at error level.
-func Error(v ...interface{}) {
-	logs.Error(generateFmtStr(len(v)), v...)
+// Infof uses fmt.Sprintf to log a templated message.
+func Infof(template string, args ...interface{}) {
+	l.logger.Info(fmt.Sprintf(template, args...))
 }
 
-// Warning logs a message at warning level.
-func Warning(v ...interface{}) {
-	logs.Warning(generateFmtStr(len(v)), v...)
+// Warnf uses fmt.Sprintf to log a templated message.
+func Warnf(template string, args ...interface{}) {
+	l.logger.Error(fmt.Sprintf(template, args...))
 }
 
-// Warn compatibility alias for Warning()
-func Warn(v ...interface{}) {
-	logs.Warn(generateFmtStr(len(v)), v...)
+// Errorf uses fmt.Sprintf to log a templated message.
+func Errorf(template string, args ...interface{}) {
+	l.logger.Error(fmt.Sprintf(template, args...))
 }
 
-// Notice logs a message at notice level.
-func Notice(v ...interface{}) {
-	logs.Notice(generateFmtStr(len(v)), v...)
+// Panicf uses fmt.Sprintf to log a templated message, then panics.
+func Panicf(template string, args ...interface{}) {
+	l.logger.Panic(fmt.Sprintf(template, args...))
 }
 
-// Informational logs a message at info level.
-func Informational(v ...interface{}) {
-	logs.Informational(generateFmtStr(len(v)), v...)
+// Fatalf uses fmt.Sprintf to log a templated message, then calls os.Exit.
+func Fatalf(template string, args ...interface{}) {
+	l.logger.Fatal(fmt.Sprintf(template, args...))
 }
 
-// Info compatibility alias for Warning()
-func Info(v ...interface{}) {
-	logs.Info(generateFmtStr(len(v)), v...)
+// Infowf info with fields
+func Infowf(msg string, field ...zap.Field) {
+	l.logger.Info(msg, field...)
 }
 
-// Debug logs a message at debug level.
-func Debug(v ...interface{}) {
-	logs.Debug(generateFmtStr(len(v)), v...)
+// Warnwf warn with field
+func Warnwf(msg string, field ...zap.Field) {
+	l.logger.Warn(msg, field...)
 }
 
-// Trace logs a message at trace level.
-// compatibility alias for Warning()
-func Trace(v ...interface{}) {
-	logs.Trace(generateFmtStr(len(v)), v...)
+// Panicwf panic with field
+func Panicwf(msg string, field ...zap.Field) {
+	l.logger.Panic(msg, field...)
 }
 
-func generateFmtStr(n int) string {
-	return strings.Repeat("%v ", n)
+// patal fatal with field
+func Fatalwf(msg string, field ...zap.Field) {
+	l.logger.Fatal(msg, field...)
+}
+
+// Sync flushes any buffered log entries.
+func Sync() error {
+	return l.logger.Sync()
 }
