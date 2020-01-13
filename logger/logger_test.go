@@ -26,5 +26,12 @@ func TestLogger(t *testing.T) {
 	Warn(case1)
 	Error(case1)
 
+
+	Info(map[string]interface{}{
+		"ID":123,
+		"Name":"name",
+		"Msg":"this is map case",
+	})
+
 	time.Sleep(time.Second)
 }

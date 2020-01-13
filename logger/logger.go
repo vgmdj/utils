@@ -3,7 +3,7 @@ package logger
 import (
 	"fmt"
 	"go.uber.org/zap"
-	"log"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -26,15 +26,11 @@ func init() {
 
 // NewLogger create a new zap logger
 func NewLogger(c *Config) *zap.Logger {
-	zc := c.NewZapConfig()
+	zc := c.NewEncoderConfig()
 	ops := c.SetWriter()
-	l, err := zc.Build(ops...)
-	if err != nil {
-		// TODO can set alert
-		log.Println(err.Error())
-	}
+	core := zapcore.NewCore(zapcore.NewJSONEncoder(zc), ops, zap.NewAtomicLevel())
+	return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.PanicLevel), zap.AddStacktrace(zap.ErrorLevel))
 
-	return l
 }
 
 // Reset reset the global logger

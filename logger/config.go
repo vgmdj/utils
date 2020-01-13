@@ -1,12 +1,11 @@
 package logger
 
 import (
+	"os"
 	"time"
 
-	"go.uber.org/zap"
-
-	rotateLogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const (
@@ -23,8 +22,9 @@ var (
 		WriteToFile:    false,
 		WriteToConsole: true,
 		FileName:       "",
-		RotationCount:  7,
-		RotationTime:   time.Hour * 24,
+		MaxSize:        0,
+		MaxBackups:     0,
+		MaxDays:        0,
 		TimeKey:        timeKey,
 		LevelKey:       levelKey,
 		NameKey:        nameKey,
@@ -38,8 +38,9 @@ type Config struct {
 	WriteToFile    bool
 	WriteToConsole bool
 	FileName       string
-	RotationCount  uint
-	RotationTime   time.Duration
+	MaxDays        int
+	MaxSize        int
+	MaxBackups     int
 
 	TimeKey       string
 	LevelKey      string
@@ -49,8 +50,12 @@ type Config struct {
 	StacktraceKey string
 }
 
-func (c *Config) NewZapConfig() zap.Config {
-	ec := zapcore.EncoderConfig{
+func (c *Config) NewAtomicLevel() {
+
+}
+
+func (c *Config) NewEncoderConfig() zapcore.EncoderConfig {
+	return zapcore.EncoderConfig{
 		TimeKey:        c.TimeKey,
 		LevelKey:       c.LevelKey,
 		NameKey:        c.NameKey,
@@ -61,37 +66,34 @@ func (c *Config) NewZapConfig() zap.Config {
 		EncodeLevel:    zapcore.LowercaseLevelEncoder, //lower case encoding
 		EncodeTime:     EchoTimeEncoder,               //time format, eg:2006-01-02 15:04:05
 		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.FullCallerEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 
-	zc := zap.NewProductionConfig()
-	zc.EncoderConfig = ec
-
-	return zc
 }
 
-func (c *Config) SetWriter() []zap.Option {
-	result := make([]zap.Option, 0)
+func (c *Config) SetWriter() zapcore.WriteSyncer {
+	result := make([]zapcore.WriteSyncer, 0)
 	if c.WriteToFile {
-		result = append(result, setFileWriter(c.FileName, c.RotationCount, c.RotationTime))
+		result = append(result, setFileWriter(c.FileName, c.MaxSize, c.MaxBackups, c.MaxDays))
 	}
 
 	if c.WriteToConsole {
-
+		result = append(result, zapcore.AddSync(os.Stdout))
 	}
 
-	return result
+	return zapcore.NewMultiWriteSyncer(result...)
 }
 
-func setFileWriter(fileName string, rotateCount uint, rotateTime time.Duration) zap.Option {
-	hook, _ := rotateLogs.New(
-		fileName+".%Y%m%d",
-		rotateLogs.WithLinkName(fileName),
-		rotateLogs.WithRotationCount(rotateCount),
-		rotateLogs.WithRotationTime(rotateTime),
-	)
+func setFileWriter(fileName string, maxSize, maxBackups, maxDays int) zapcore.WriteSyncer {
+	hook := &lumberjack.Logger{
+		Filename:   fileName,
+		MaxSize:    maxSize,
+		MaxBackups: maxBackups,
+		MaxAge:     maxDays,
+		LocalTime:  true,
+	}
 
-	return zap.ErrorOutput(zapcore.AddSync(hook))
+	return zapcore.AddSync(hook)
 }
 
 func EchoTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
