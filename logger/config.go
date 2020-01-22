@@ -9,28 +9,32 @@ import (
 )
 
 const (
-	timeKey       = "time"
-	levelKey      = "level"
-	nameKey       = "logger"
-	callerKey     = "caller"
-	msgKey        = "msg"
-	stacktraceKey = "stacktrace"
+	TimeKey           = "time"
+	LevelKey          = "level"
+	NameKey           = "logger"
+	CallerKey         = "caller"
+	MsgKey            = "msg"
+	StacktraceKey     = "stacktrace"
+	DefaultFileName   = "/tmp/logger.log"
+	DefaultMaxSize    = 10 //10MB
+	DefaultMaxBackups = 10 //10个备份文件
+	DefaultMaxDays    = 30 //保留30天
 )
 
 var (
 	DefaultConfig = &Config{
 		WriteToFile:    false,
 		WriteToConsole: true,
-		FileName:       "",
-		MaxSize:        0,
-		MaxBackups:     0,
-		MaxDays:        0,
-		TimeKey:        timeKey,
-		LevelKey:       levelKey,
-		NameKey:        nameKey,
-		CallerKey:      callerKey,
-		MessageKey:     msgKey,
-		StacktraceKey:  stacktraceKey,
+		FileName:       DefaultFileName,
+		MaxSize:        DefaultMaxSize,
+		MaxBackups:     DefaultMaxBackups,
+		MaxDays:        DefaultMaxDays,
+		TimeKey:        TimeKey,
+		LevelKey:       LevelKey,
+		NameKey:        NameKey,
+		CallerKey:      CallerKey,
+		MessageKey:     MsgKey,
+		StacktraceKey:  StacktraceKey,
 	}
 )
 
@@ -50,7 +54,27 @@ type Config struct {
 	StacktraceKey string
 }
 
-func (c *Config) NewAtomicLevel() {
+// Init default out is console
+func (c *Config) Init() {
+	if !c.WriteToConsole && !c.WriteToFile {
+		c.WriteToConsole = true
+	}
+
+	if c.MaxDays == 0 {
+		c.MaxDays = DefaultConfig.MaxDays
+	}
+
+	if c.MaxSize == 0 {
+		c.MaxSize = DefaultConfig.MaxSize
+	}
+
+	if c.MaxBackups == 0 {
+		c.MaxBackups = DefaultConfig.MaxBackups
+	}
+
+	if c.WriteToFile && c.FileName == "" {
+		c.FileName = DefaultConfig.FileName
+	}
 
 }
 

@@ -26,6 +26,7 @@ func init() {
 
 // NewLogger create a new zap logger
 func NewLogger(c *Config) *zap.Logger {
+	c.Init()
 	zc := c.NewEncoderConfig()
 	ops := c.SetWriter()
 	core := zapcore.NewCore(zapcore.NewJSONEncoder(zc), ops, zap.NewAtomicLevel())
@@ -40,6 +41,11 @@ func Reset(c *Config) {
 	}
 	l.logger = NewLogger(l.c)
 	defer l.logger.Sync()
+}
+
+// With add global logger field
+func With(key string, value interface{}) {
+	l.logger.With(zap.Any(key, value))
 }
 
 // Info uses fmt.Sprint to construct and log a message.
