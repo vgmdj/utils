@@ -52,27 +52,27 @@ func With(key string, value interface{}) {
 
 // Info uses fmt.Sprint to construct and log a message.
 func Info(args ...interface{}) {
-	l.logger.Info(fmt.Sprint(args...))
+	l.logger.Info(sprint(args))
 }
 
 // Warn uses fmt.Sprint to construct and log a message.
 func Warn(args ...interface{}) {
-	l.logger.Warn(fmt.Sprint(args...))
+	l.logger.Warn(sprint(args))
 }
 
 // Error uses fmt.Sprint to construct and log a message.
 func Error(args ...interface{}) {
-	l.logger.Error(fmt.Sprint(args...))
+	l.logger.Error(sprint(args))
 }
 
 // Panic uses fmt.Sprint to construct and log a message, then panics.
 func Panic(args ...interface{}) {
-	l.logger.Panic(fmt.Sprint(args...))
+	l.logger.Panic(sprint(args))
 }
 
 // Fatal uses fmt.Sprint to construct and log a message, then calls os.Exit.
 func Fatal(args ...interface{}) {
-	l.logger.Fatal(fmt.Sprint(args...))
+	l.logger.Fatal(sprint(args))
 }
 
 // Infof uses fmt.Sprintf to log a templated message.
@@ -82,7 +82,7 @@ func Infof(template string, args ...interface{}) {
 
 // Warnf uses fmt.Sprintf to log a templated message.
 func Warnf(template string, args ...interface{}) {
-	l.logger.Error(fmt.Sprintf(template, args...))
+	l.logger.Warn(fmt.Sprintf(template, args...))
 }
 
 // Errorf uses fmt.Sprintf to log a templated message.
@@ -123,4 +123,8 @@ func Fatalwf(msg string, field ...zap.Field) {
 // Sync flushes any buffered log entries.
 func Sync() error {
 	return l.logger.Sync()
+}
+
+func sprint(args []interface{}) string {
+	return fmt.Sprint(args)
 }
