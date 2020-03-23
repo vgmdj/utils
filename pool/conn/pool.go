@@ -73,7 +73,7 @@ func (p *Pool) Put(r io.Closer) {
 
 	// If the queue is already at cap we close the resource.
 	default:
-		logger.Warning("Release:", "Closing")
+		logger.Warn("Release:", "Closing")
 		r.Close()
 	}
 }
