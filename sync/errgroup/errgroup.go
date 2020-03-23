@@ -29,6 +29,7 @@ type Group struct {
 
 // WithContext create a Group.
 // given function from Go will receive this context,
+// and will not give cancel func
 func WithContext(ctx context.Context) *Group {
 	if ctx == nil {
 		ctx = context.Background()
@@ -74,6 +75,7 @@ func (g *Group) do(f func(ctx context.Context) error) {
 				}
 			})
 		}
+		g.wg.Done()
 
 	}()
 
