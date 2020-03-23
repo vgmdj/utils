@@ -50,4 +50,6 @@ short message system，一些常用消息（短信）平台的消息推送接口
 - 微信公众号（支持）
 - 阿里云（待开发）
 
+## sync
+fork from golang.org/x/sync/errgroup
 
