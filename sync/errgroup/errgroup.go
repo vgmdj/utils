@@ -17,8 +17,6 @@ import (
 //
 // A zero Group is valid and does not cancel on error.
 type Group struct {
-	workerOnce sync.Once
-
 	ctx    context.Context
 	cancel func()
 
