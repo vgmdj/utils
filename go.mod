@@ -16,6 +16,7 @@ require (
 	github.com/smartystreets/goconvey v0.0.0-20180222194500-ef6db91d284a // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
+	go.uber.org/atomic v1.5.0
 	go.uber.org/zap v1.13.0
 	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529
 	golang.org/x/text v0.3.2
