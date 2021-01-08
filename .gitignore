@@ -102,4 +102,5 @@ ENV/
 
 # tools
 .idea/
+.vscode/
 

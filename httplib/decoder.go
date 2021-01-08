@@ -8,8 +8,6 @@ import (
 	"strings"
 
 	jsoniter "github.com/json-iterator/go"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 //MIME
@@ -126,7 +124,6 @@ func newParser(config map[string]string) (*parser, error) {
 	contentType = strings.Split(contentType, ";")[0]
 	decoder, ok := decoders[contentType]
 	if !ok {
-		logger.Error("unexpected content type ,you can use ResponseResultContentType in headers to specified the decode way")
 		return nil, fmt.Errorf("Cannot decode request by content-type %s ", contentType)
 	}
 	p.decoder = decoder
@@ -143,7 +140,6 @@ func newParser(config map[string]string) (*parser, error) {
 //respParser 对返回的body的处理
 func (p *parser) respParser(body []byte, v interface{}) (err error) {
 	if len(body) == 0 && !p.respAllowNull {
-		logger.Error("no body data")
 		return fmt.Errorf("body not allow null , but get nothing")
 	}
 
@@ -152,7 +148,6 @@ func (p *parser) respParser(body []byte, v interface{}) (err error) {
 	}
 
 	if err = p.decoder.Unmarshal(body, v); err != nil {
-		logger.Error("err info ", string(body))
 		return
 	}
 

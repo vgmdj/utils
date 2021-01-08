@@ -2,14 +2,11 @@ package encrypt
 
 import (
 	"crypto/des"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 func DesEncrypt(plaintext, key string) (cipherText []byte, err error) {
 	block, err := des.NewCipher([]byte(key))
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 
@@ -27,7 +24,6 @@ func DesEncrypt(plaintext, key string) (cipherText []byte, err error) {
 func DesTripleEncrypt(plaintext, key string) (cipherText []byte, err error) {
 	block, err := des.NewTripleDESCipher([]byte(key))
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 

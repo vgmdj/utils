@@ -2,12 +2,11 @@ package chars
 
 import (
 	"fmt"
+	"log"
 	"time"
 
-	//数据使用库
-	_ "github.com/vgmdj/gb2260/gbdata"
+	_ "github.com/vgmdj/gb2260/gbdata" // gb2260 data
 	"github.com/vgmdj/utils/area"
-	"github.com/vgmdj/utils/logger"
 )
 
 //Sex 性别
@@ -143,7 +142,7 @@ func CheckIDCode(idcode string) bool {
 //GetIDCodeCheckSum 计算最后一位校验位
 func GetIDCodeCheckSum(idcode string) byte {
 	if len(idcode) != 18 && len(idcode) != 17 {
-		logger.Error("invalid length of idcode")
+		log.Println("invalid length of idcode")
 		return ' '
 	}
 

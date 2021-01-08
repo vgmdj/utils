@@ -5,13 +5,11 @@ import (
 	"strconv"
 
 	"github.com/Luxurioust/excelize"
-	"github.com/vgmdj/utils/logger"
 )
 
 //CreateFile 创建excel
 func (excel *Excel) CreateFile() (err error) {
 	if err = excel.checkExcel(); err != nil {
-		logger.Error(err)
 		return
 	}
 
@@ -22,7 +20,6 @@ func (excel *Excel) CreateFile() (err error) {
 
 	err = xlsx.SaveAs(excel.FileName)
 	if err != nil {
-		logger.Error(err)
 		return
 	}
 

@@ -1,12 +1,11 @@
 package encrypt
 
 import (
+	"log"
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"fmt"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 // PKCS5Padding pkcs5 padding 方式
@@ -27,7 +26,7 @@ func PKCS5UnPadding(originData []byte) []byte {
 
 	unpadding := int(originData[length-1])
 	if unpadding > length {
-		logger.Warning(fmt.Sprintf("index out of range, want to use left %d, but length is %d",
+		log.Printf("index out of range, want to use left %d, but length is %d",
 			length-unpadding, length))
 		return originData
 	}
@@ -116,7 +115,6 @@ func AesCBCEncrypt(plainText, key, iv []byte) (cipherText []byte, err error) {
 func AesCBCDecrypt(cipherText, key, iv []byte) (plainText []byte, err error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 

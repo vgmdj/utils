@@ -1,11 +1,10 @@
 package chars
 
 import (
+	"log"
 	"math"
 	"strconv"
 	"strings"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 //ToInt 转换成int格式
@@ -60,7 +59,7 @@ func ToInt(num interface{}) int {
 func ToInt64(num interface{}) int64 {
 	switch num.(type) {
 	default:
-		logger.Error("invalid type ", num)
+		log.Println("invalid type ", num)
 		return 0
 
 	case string:
@@ -70,7 +69,7 @@ func ToInt64(num interface{}) int64 {
 			str = str[:index]
 		}
 
-		result, _ := strconv.ParseInt(str,0,64)
+		result, _ := strconv.ParseInt(str, 0, 64)
 		return result
 
 	case int:
@@ -109,7 +108,7 @@ func ToInt64(num interface{}) int64 {
 func ToFloat64(num interface{}) float64 {
 	switch num.(type) {
 	default:
-		logger.Error("invalid type ", num)
+		log.Println("invalid type ", num)
 		return 0
 
 	case float64:
@@ -143,7 +142,7 @@ func ToString(num interface{}, prec ...int) string {
 
 	switch num.(type) {
 	default:
-		logger.Error("invalid type ", num)
+		log.Println("invalid type ", num)
 		return ""
 
 	case string:

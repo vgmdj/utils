@@ -1,9 +1,8 @@
 package chars
 
 import (
+	"log"
 	"sort"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 //IsDuplicates 数组内重复元素判断
@@ -39,7 +38,7 @@ func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
 func IsContain(array interface{}, value interface{}) bool {
 	switch array.(type) {
 	default:
-		logger.Error("not support value type")
+		log.Println("not support value type")
 		return false
 
 	case []string:

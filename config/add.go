@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/go-ini/ini"
-	"github.com/vgmdj/utils/logger"
 )
 
 const (
@@ -34,14 +33,14 @@ func (c *Conf) AddConfig(sec string, obj interface{}) (err error) {
 
 }
 
-func unmarshal(sec *ini.Section, rv reflect.Value) {
+func unmarshal(sec *ini.Section, rv reflect.Value) error {
 	rType := rv.Type()
 
 	for i := 0; i < rType.NumField(); i++ {
 		key := rType.Field(i).Tag.Get(tag)
 		secKey, err := sec.GetKey(key)
 		if err != nil {
-			logger.Error(err.Error())
+			return err
 		}
 
 		if rv.Field(i).CanSet() {

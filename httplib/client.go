@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 const (
@@ -74,7 +72,6 @@ func NewClient(conf *ClientConf) *Client {
 	}
 
 	if err := conf.Auth.CheckFormat(); err != nil {
-		logger.Error(err.Error())
 		panic("must use correct http auth params")
 	}
 
@@ -109,7 +106,6 @@ func (c *Client) SetConfig(conf *ClientConf) {
 
 //Raw sends an HTTP request and use client do
 func (c *Client) Raw(method, uri string, body []byte, v interface{}, headers map[string]string) (err error) {
-	logger.Info(uri, string(body), headers)
 
 	if headers == nil {
 		headers = make(map[string]string)
@@ -117,13 +113,11 @@ func (c *Client) Raw(method, uri string, body []byte, v interface{}, headers map
 
 	request, err := c.NewRequest(method, uri, body, headers)
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 
 	rb, rh, err := c.DoWithData(request)
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 
@@ -134,7 +128,6 @@ func (c *Client) Raw(method, uri string, body []byte, v interface{}, headers map
 
 	p, err := newParser(config)
 	if err != nil {
-		logger.Error(err.Error())
 		return
 	}
 
@@ -146,8 +139,6 @@ func (c *Client) Raw(method, uri string, body []byte, v interface{}, headers map
 func (c *Client) NewRequest(method, uri string, body []byte, headers map[string]string) (request *http.Request, err error) {
 	request, err = http.NewRequest(method, uri, bytes.NewReader(body))
 	if err != nil {
-		logger.Error(err.Error())
-		logger.Error("method:", method, "uri:", uri)
 		return
 	}
 
@@ -166,24 +157,20 @@ func (c *Client) Do(request *http.Request) (resp *http.Response, err error) {
 	return c.httpCli.Do(request)
 }
 
-//Do sends an HTTP request and return response data
+//DoWithData sends an HTTP request and return response data
 func (c *Client) DoWithData(request *http.Request) ([]byte, http.Header, error) {
 	resp, err := c.Do(request)
 	if err != nil {
-		logger.Error(err.Error())
-		logger.Error("发送请求错误")
 		return nil, nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode/100 != 2 {
-		logger.Error("bad request , status code :", resp.StatusCode)
 		return nil, nil, fmt.Errorf("bad request %d", resp.StatusCode)
 	}
 
 	bts, err := readAll(resp.Body, MinRead)
 	if err != nil {
-		logger.Error(err.Error())
 		return nil, nil, err
 	}
 

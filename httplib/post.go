@@ -4,12 +4,10 @@ import (
 	"encoding/xml"
 	"net/http"
 	"net/url"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 //PostJSON http method post, content type application/json
-func (c *Client) PostJSON(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostJSON(postURL string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -20,15 +18,14 @@ func (c *Client) PostJSON(postUrl string, body interface{}, respInfo interface{}
 
 	var values []byte
 	if values, err = json.Marshal(body); err != nil {
-		logger.Error("request: ", body)
 		return
 	}
 
-	return c.Raw(http.MethodPost, postUrl, values, respInfo, headers)
+	return c.Raw(http.MethodPost, postURL, values, respInfo, headers)
 }
 
 //PostXML http method post , content type application/xml
-func (c *Client) PostXML(postUrl string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostXML(postURL string, body interface{}, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -39,15 +36,14 @@ func (c *Client) PostXML(postUrl string, body interface{}, respInfo interface{},
 
 	var values []byte
 	if values, err = xml.Marshal(body); err != nil {
-		logger.Error("request: ", body)
 		return
 	}
 
-	return c.Raw(http.MethodPost, postUrl, values, respInfo, headers)
+	return c.Raw(http.MethodPost, postURL, values, respInfo, headers)
 }
 
 //PostForm http method post , content type x-www-form-urlencoded
-func (c *Client) PostForm(postUrl string, formValues map[string]string, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostForm(postURL string, formValues map[string]string, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -61,11 +57,11 @@ func (c *Client) PostForm(postUrl string, formValues map[string]string, respInfo
 		values[k] = []string{v}
 	}
 
-	return c.Raw(http.MethodPost, postUrl, []byte(values.Encode()), respInfo, headers)
+	return c.Raw(http.MethodPost, postURL, []byte(values.Encode()), respInfo, headers)
 }
 
 //PostBytes http method post,
-func (c *Client) PostBytes(postUrl string, bytes []byte, respInfo interface{}, headers map[string]string) (err error) {
+func (c *Client) PostBytes(postURL string, bytes []byte, respInfo interface{}, headers map[string]string) (err error) {
 	if len(headers) == 0 {
 		headers = make(map[string]string)
 	}
@@ -74,5 +70,5 @@ func (c *Client) PostBytes(postUrl string, bytes []byte, respInfo interface{}, h
 		headers[ContentType] = "text/plain;charset=UTF-8"
 	}
 
-	return c.Raw(http.MethodPost, postUrl, bytes, respInfo, headers)
+	return c.Raw(http.MethodPost, postURL, bytes, respInfo, headers)
 }

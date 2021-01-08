@@ -3,7 +3,6 @@ package conn
 
 import (
 	"errors"
-	"github.com/vgmdj/utils/logger"
 	"io"
 	"log"
 	"sync"
@@ -73,7 +72,6 @@ func (p *Pool) Put(r io.Closer) {
 
 	// If the queue is already at cap we close the resource.
 	default:
-		logger.Warn("Release:", "Closing")
 		r.Close()
 	}
 }

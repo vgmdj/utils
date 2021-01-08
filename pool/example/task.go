@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/vgmdj/utils/pool/task"
-
-	"github.com/vgmdj/utils/logger"
 )
 
 func main() {
@@ -25,7 +23,6 @@ func standardCal(amount int) {
 	}
 
 	end := time.Now()
-	logger.Info(sum, end.Sub(start))
 
 }
 
@@ -49,7 +46,6 @@ func poolCal(amount int) {
 
 		end := time.Now()
 
-		logger.Info(sum, end.Sub(start))
 		p.Close()
 
 	}()
