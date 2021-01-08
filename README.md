@@ -1,5 +1,8 @@
 # web tools
 
+not good enough to use directly
+
+
 ## [chars](https://github.com/vgmdj/utils/tree/master/chars)
 
 字符串处理包
