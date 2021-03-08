@@ -5,7 +5,7 @@ require (
 	github.com/Luxurioust/excelize v1.3.0
 	github.com/go-ini/ini v1.38.2
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/google/uuid v1.0.0 // indirect
+	github.com/google/uuid v1.0.0
 	github.com/gopherjs/gopherjs v0.0.0-20180825215210-0210a2f0f73c // indirect
 	github.com/json-iterator/go v1.1.7
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
