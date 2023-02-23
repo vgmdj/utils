@@ -19,8 +19,8 @@ require (
 	github.com/vgmdj/gb2260 v0.0.0-20180621064901-26fbcc4a270b
 	go.uber.org/atomic v1.6.0
 	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/text v0.3.3
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/text v0.3.8
 	gopkg.in/ini.v1 v1.38.2 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
 )
